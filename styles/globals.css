@@ -1,9 +1,10 @@
+@import url('https://fonts.googleapis.com/css?family=Sarala');
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Sarala;
+  background: #2B85D8;
 }
 
 a {
@@ -13,4 +14,28 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+table {
+  
+  border-collapse: collapse;
+  width: 100%;
+  border-radius: 30;
+  color: #000000
+}
+
+td, th {
+  border: 3px solid #000000;
+  text-align: left;
+  padding: 8px;
+  border-radius: 30;
+  color: white
+}
+
+
+tr:nth-child(even) {
+  background-color: #3AACFF;
+}
+tr:nth-child(odd) {
+  background-color: #35698f;
 }

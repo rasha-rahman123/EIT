@@ -1,0 +1,11 @@
+.cardBg {
+   
+    width: 220px;
+    height: 270px;
+    border-radius: 10px;
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 34;
+   content: " ";
+}

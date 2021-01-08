@@ -5,11 +5,42 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "ngrok": "ngrok http 3000"
   },
   "dependencies": {
+    "@mdx-js/loader": "^1.6.22",
+    "@next/mdx": "^10.0.4",
+    "@yisheng90/react-loading": "^1.4.4",
+    "axios": "^0.21.1",
+    "axios-progress-bar": "^1.2.0",
+    "brain.js": "^2.0.0-beta.2",
+    "firebase": "^8.2.1",
+    "firebase-admin": "^9.4.2",
+    "iframe-resizer-react": "^1.1.0",
+    "ml-classify-text": "^2.0.0",
     "next": "10.0.4",
+    "next-page-transition": "^1.0.17",
+    "next-seo": "^4.17.0",
+    "nookies": "^2.5.0",
+    "progressbar.js": "^1.1.0",
+    "puppeteer": "^5.5.0",
     "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "react-dragscroll": "^2.0.1",
+    "react-icons": "^4.1.0",
+    "react-modal": "^3.12.1",
+    "react-signature-canvas": "^1.0.3",
+    "react-toastify": "^6.2.0",
+    "react-transition-group": "^4.4.1",
+    "react-typist": "^2.0.5",
+    "rebass": "^4.0.7",
+    "signature_pad": "^3.0.0-beta.4",
+    "theme-ui": "^0.3.5",
+    "xml-js": "^1.6.11",
+    "xml2json": "^0.12.0"
+  },
+  "devDependencies": {
+    "ngrok": "^3.4.0"
   }
 }

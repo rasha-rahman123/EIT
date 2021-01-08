@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "cognitivenotebook",
+  "private_key_id": "218e5f105a132ed2ca6864e18efbed2de7ccab3e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDFMvuUWmmCb6Ln\nYCVPsgCPoODGzOPEnIgAP9P3ERxtYjMsEchwRTGVQAodUDi0qrQzkK1sDgNGLrmr\nYKR1fs+PffsHri0WSUFlmbYyhLjmlXm4v0xVSdbyvGvGev10lJQHi1gojnFPB2nw\nPBjjICoMfukKlgIVMCtXprVfKNk15iI8dAxgkS0eIi2Ohc9hOeTAFLnzE6H63xQv\neppAGA9YRlqxvxi2Yt98NillkV0m8JRzvsNwBddsVY+FZxH3hCm/5Fu8mwaqK50P\nRfGFPOLgEFZm34r+gsvjAJyfd8AwPujTFkfVhY+4hHiJlhN+RIIQ654M+VGURPqu\nKLMJTvDNAgMBAAECggEALZD/yAJyQeUY39z8EiO/9HBIsDc05EAFPwWAraTjDDV2\nPJcpWSPr9qBTFf3s9HZDaGzkXcUJJaTzWzHcHpg8Ttxd7qLlITKxLVBs5NR9Qy7D\n7xgpA8YpqHI4dycBPPh+EhY1Oz3a2deNN6kzWPwcK0ICCGOsPIgiY8EORNxUAJty\nZHR8vNxiKguqxecaXvlrMVKFv6L1eFS20EexAVax8G+XVxMdfVhQncwicrN5nm3C\nEUVfXkOBkynQvMlyN4R53pT+c2q338VHqa/K5MY0EZiOA0ODfHmmvfV1qPtoe3NF\nuh7znAK+0FuLwl2f477oN4LoYVHe59h9ij2aeEKUwQKBgQDorWqCQdADOW+Kc1Bo\n+oNO6Fp7z4fSnXSsPUcxnqBSHVDL38RgQhEDBFxhVUC8mwb+paAI8KncC9ugW+86\nf3wOULugZuemzF2ba75A4NWARPvx8S8sPxNkcPIUwYpwz+RSNjCu573MrAloBO/C\nblnwaQVSQXqhmAASXKOVBtjY4QKBgQDY9y6kguW6hliAx5T51hylZkzXWH0o+0eD\nBPtsVRik6Qu5W9TcXp38HMESHl0/7Y62dOE+LR5vC8r4QU84EqHvg6IgKEhepkLL\nmkrQXySFNIPpmQC/tvjP7uEjkiQXVJeYY8N6tBPnnMZ1Zl/4iqh2e4fMnXvcSiS/\nbg/CckC5bQKBgQCsCMxfUtnCCI14CJrDg7XiedmtAVyjVNgXIZeqEGbpT9OVafWA\nVljNqkPDk40x5k3dqggRlB+DGyFgB5lx3yCSVQ7lIjDVGvV7HMamoZY6KMc/s9v1\nEw37jabvwcnib1OZlYeZSq8CzZCG4F+FmqHVJ1FP6CoLoJ8s9GHephlfAQKBgFrE\nJd4q6KJ8u5+8XwWZ3kgPoQvh+BJh9QvJ1MkAXJv45q+3zDgY2Sz0doz26Pnqju6j\nvOs/AuFf5Jyw7cw+d0J1Jikf0Q7PrVfyB2ReuS+Exb6/BIIvsK2EeOlhpPmhqP3W\nlpvJpB4cByZsGrAmic1vZmNiasPAvNjc2Xj2RT+NAoGAeNrt0tBiRXcsHbvzpDu1\nVpmna66rJhquOpapL9lyhp8IItYsww6nkuqhABMj+Ox+arhW82umPJDKwXQEDBMv\nITNJnE2ibtV1XrkOuAajsha2cJXrOSkEYSPWzKIwdjWmN/P5dlaOvhMuJM5uueIn\nSCRATJY4qVOsxRswXnBSKlQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-1laxb@cognitivenotebook.iam.gserviceaccount.com",
+  "client_id": "108907119800908148732",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-1laxb%40cognitivenotebook.iam.gserviceaccount.com"
+}

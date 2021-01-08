@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "ringed-arcana-300422",
+  "private_key_id": "3fdf4773c2521277714ee7ba7b6f1102ad5f188b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDSAvGth6WliHbN\nucnpM4pTn4MDGMaqHfUQajYG6BHsxDQtreg9acjiS0fqZ93FymXgYWj/vuYRYrTN\nDnV2jv+xOJQDOMm1OLq097SPqrUzbKGm3QlAH7KBl1Eu1LUCvpW9rT7khR2NmaAK\niYJtiUIqPIYm2N9UQ79p9/iU+B7UBDxzqc9feOcN3CtPyjdfmjboWXeWE6rePyq8\nJgHTJX7ZnANpFGfP8y4FaWJlCneLp+n9CJe1nNAhsjETIFVNvL0DfgXsdLvw9+VY\nCcrsaRV8Qx0011/3RfUkXMLDZvXF4l/QLR8NzvkYSDcLNFhXmR9XBYg/Nsz1QVf6\nzavfg6DTAgMBAAECggEACH9q/7kMkwFNwVmiWb0mpzyTRLWkxZnBt/Ym6n+gc2Kl\ns9rPb2YPkAHjeTuBBfGrI/mnvIAhIhSgOT3mXd4/wBAzLlrcD+j+5mIG3IYCn//m\nHfDgC3KyOpErYp2ObNEru57o0RQGfpt364U7PFXAp3cx0ceWaHv3S6vnfeujn7OG\nAkub5cvgX49JmBv7vEoWwIZ941B4HVR/RFAxBysCyGtG1Y0bQnPvrpMx84x08IbM\ngrgyf2p6fh64DhOqsgr7OuJihHy7s8TOFxyxyndheafk8BfpCgNH2gBMzqJHRGwT\naFwaW7q8YlAyEM2uPxB5r4pVU9CaSxEiIuI+kGyW8QKBgQD9OnwjnaV/QUpBVLvw\nVNPKT+Oo2bLm0w1XNRc/Lkb5qGA5HbJiSGW8vbGYt0CPCoVKeVIFnHuRSMJVKzL3\nZ5eXs1svM/8FqzZYRH1cm4EIhFCWIOrw7LREEwH46oQ6d7bMtsRKWsEWaD7OYNyN\nPEJ2EwCm69J8Hn415vnx2+D+wwKBgQDUT17anm9Dnrcpk4tniFq/0MQXYe/Gr4m+\n+8Zfd0ByGdFNMvsZaQ9iZXJ0o2+ZWICZKEnluG8s/qFbiA+H2zQIzKAjHBgNhpBY\nz0DaEWaViFz7mWJv+12nvaiVZt4Cyaf6m/VqegYir9oiLWqY4kekQqZNg2jf8EmK\nj512Nn7UsQKBgEpHlZJ888bYSAfR6y8cMuPte0JUWX4L+qXSFPebg4ZINbGLXIAn\n7G/o1OePGYjb9S1bWQv8UuLTDO4etdyMrpL5MY4vGmd3SYGq1XsMwlTVOy5OiZwS\nUu6FBNcXM6JS63QxSHLnHCyOd53iG8/yFSy9djuAgUWXTD5Teo3PibgxAoGBAM1B\nGqPirhDCnbNdSFXElm+BJkKw1T3RsSrpgGQFB1IIMbgfxHBRiKUJDLlE1Hx8+n6X\nW7HyN9FZLqguB03BlzG2mk63N23EHUMuwzTPw8xm8/Xt2SQH8QhdLGGb/KDXUkXP\nh1j0NYBNYGbQX5EEmlxsbxjbJYXyaTbDF2kU0FNRAoGBAMKG9hciGaFrCY+SyE9E\nWveViDpKAlF8tdoela/mYrI4TJwLp9iRMxtkmpceSGWX+mq9vYjTbm5xGiwkxs3h\nOHh6NcR0Z3BpgZveh8flVZ/nv6AkpshNA0d/EVRrj2p6BGcq5kozf6i7lqVl6W2o\nv/Tx+Qw7+FuY/LWjwYlQjb8Y\n-----END PRIVATE KEY-----\n",
+  "client_email": "rasha-331@ringed-arcana-300422.iam.gserviceaccount.com",
+  "client_id": "114879803566615105548",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/rasha-331%40ringed-arcana-300422.iam.gserviceaccount.com"
+}
