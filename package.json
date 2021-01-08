@@ -36,6 +36,7 @@
     "react-typist": "^2.0.5",
     "rebass": "^4.0.7",
     "signature_pad": "^3.0.0-beta.4",
+    "swr": "^0.4.0",
     "theme-ui": "^0.3.5",
     "xml-js": "^1.6.11",
     "xml2json": "^0.12.0"

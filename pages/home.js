@@ -6,7 +6,7 @@ import { AuthContext } from "../context/AuthContext";
 import { MdEventAvailable, MdSpeaker } from "react-icons/md";
 import { IoBandage, IoBed, IoBrush, IoFastFood } from "react-icons/io5";
 import Link from "next/link";
-
+import useSWR from "swr";
 import firebase from "firebase";
 import Modal from "react-modal";
 import Typist from "react-typist";
@@ -68,7 +68,6 @@ const taskCards = [
     color: "#43A047",
     slug: "draw-it-down",
   },
-  
 ];
 
 const helpRec = [
@@ -113,6 +112,11 @@ const Home = (props) => {
   const [queries, setQueries] = useState();
   const [score, setScore] = useState();
   const [modalOpen, setModalOpen] = useState(false);
+
+  const { data } = useSWR(
+    "/api/getMediumArticle",
+    fetch("/api/getMediumArticle").then((r) => r.json())
+  );
   useEffect(async () => {
     Router && (await setQueries(Router.query));
     Router &&
@@ -123,34 +127,32 @@ const Home = (props) => {
   useEffect(() => {
     user && setUserEmail(user.email);
   }, [user]);
-  const [doc, setDoc] = useState(null)
+  const [doc, setDoc] = useState(null);
 
-const {posts} = props;
+  const posts = data;
 
-const [postser, setPosts] = useState()
-
-useEffect(() => {
-  posts && memo(setPosts(posts),[postser])
-},[posts,props])
+  const [postser, setPosts] = useState();
 
   useEffect(() => {
-   token && uuid &&  loadProfile()
-  },[uuid,token])
+    posts && memo(setPosts(posts), [postser]);
+  }, [posts, props]);
+
+  useEffect(() => {
+    token && uuid && loadProfile();
+  }, [uuid, token]);
 
   async function loadProfile() {
     const db = await firebase.firestore();
-    const doc = await db.collection('Users').doc(uuid).get()
-    if(!doc.exists){
-      
+    const doc = await db.collection("Users").doc(uuid).get();
+    if (!doc.exists) {
     } else {
-     setDoc(doc.data())
-     console.log(doc.data())
-     
+      setDoc(doc.data());
+      console.log(doc.data());
     }
   }
   useEffect(() => {
-    posts && console.log(posts['rss'].channel.item)
-  },[posts])
+    posts && console.log(posts["rss"].channel.item);
+  }, [posts]);
 
   useEffect(() => {
     uuid &&
@@ -170,21 +172,25 @@ useEffect(() => {
         filter: modalOpen && "blur(2px)",
         transition: "all 300ms ease",
         width: "100%",
-        position: 'absolute',
+        position: "absolute",
         top: 0,
         left: 0,
         right: 0,
         display: "flex",
         width: "100%",
         flexDirection: "column",
-        p: 4
+        p: 4,
       }}
     >
-      
-       <Text sx={{ mt: 2, mb: 1, fontWeight: 700, fontSize: 28 }}>
- {doc && doc.firstName ?     
-        `Hello, ${doc && doc.firstName  && doc.firstName[0].toUpperCase()}${doc && doc.firstName && doc.firstName.substr(1).toLowerCase()}!`
-      : <Loading width={300} height={28} />}</Text> 
+      <Text sx={{ mt: 2, mb: 1, fontWeight: 700, fontSize: 28 }}>
+        {doc && doc.firstName ? (
+          `Hello, ${doc && doc.firstName && doc.firstName[0].toUpperCase()}${
+            doc && doc.firstName && doc.firstName.substr(1).toLowerCase()
+          }!`
+        ) : (
+          <Loading width={300} height={28} />
+        )}
+      </Text>
       <Box
         as="input"
         mb={4}
@@ -231,7 +237,7 @@ useEffect(() => {
           height: "400px",
           overflowY: "hidden",
           position: "relative",
-          alignItems: 'center',
+          alignItems: "center",
           "::-webkit-scrollbar": {
             width: 6,
             py: 1,
@@ -244,7 +250,6 @@ useEffect(() => {
           my: 4,
         }}
       >
-        
         <Modal
           isOpen={modalOpen}
           onRequestClose={() => setModalOpen(false)}
@@ -267,19 +272,17 @@ useEffect(() => {
                     icon: x.icon,
                     desc: x.desc,
                     desc2: x.desc2,
-                   
                   }}
                 />
               ))}
           <Text>You now have a total {score} points!</Text>
         </Modal>
-        {!modalOpen && taskCards
-            
-            .filter((bn) =>
-              bn.name.toLowerCase().includes(search.toLowerCase())
-            ).length > 0 ?
+        {!modalOpen &&
+        taskCards.filter((bn) =>
+          bn.name.toLowerCase().includes(search.toLowerCase())
+        ).length > 0 ? (
           taskCards
-            
+
             .filter((bn) =>
               bn.name.toLowerCase().includes(search.toLowerCase())
             )
@@ -300,12 +303,26 @@ useEffect(() => {
                       icon: x.icon,
                       desc: x.desc,
                       desc2: x.desc2,
-                      kee: i, slug: x.slug
+                      kee: i,
+                      slug: x.slug,
                     }}
                   />
                 </a>
               </Link>
-            )) : <Text sx={{alignSelf: 'self-start', px: 2, fontWeight: 800, fontSize: 6, opacity: 0.6}}>Nothing Found</Text>}
+            ))
+        ) : (
+          <Text
+            sx={{
+              alignSelf: "self-start",
+              px: 2,
+              fontWeight: 800,
+              fontSize: 6,
+              opacity: 0.6,
+            }}
+          >
+            Nothing Found
+          </Text>
+        )}
       </Box>
       <Text
         sx={{
@@ -349,46 +366,25 @@ useEffect(() => {
         }}
       >
         <a href="https://storyset.com/work">Illustration by Freepik Storyset</a>
-        {!modalOpen && postser && postser['rss'] &&
-          postser['rss'].channel.item
-         
-            .map((x, i) => (
-              <Link
-                key={i}
-                href={x.link._text}
-            
-              >
-               
-                <a>
-                <Card2 
-                cardInfo={{
-                  name:  x.title._text,
-                  desc: x.description._cdata.substr(0,40) + '...',
-                  color: posts['rss'].channel.item.indexOf(x)
-                }}
+        {!modalOpen &&
+          postser &&
+          postser["rss"] &&
+          postser["rss"].channel.item.map((x, i) => (
+            <Link key={i} href={x.link._text}>
+              <a>
+                <Card2
+                  cardInfo={{
+                    name: x.title._text,
+                    desc: x.description._cdata.substr(0, 40) + "...",
+                    color: posts["rss"].channel.item.indexOf(x),
+                  }}
                 />
-                </a>
-              </Link>
-            ))}
+              </a>
+            </Link>
+          ))}
       </Box>
-      
     </Box>
   );
 };
 
 export default Home;
-
-
-export async function getStaticProps() {
-  // Call an external API endpoint to get posts.
-  const res = await fetch('/api/getMediumArticle')
-  const posts = await res.json()
-
-  // By returning { props: posts }, the Blog component
-  // will receive `posts` as a prop at build time
-  return {
-    props: {
-      posts
-    }
-  }
-}
