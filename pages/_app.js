@@ -27,7 +27,7 @@ async function registerSW() {
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     loadProgressBar();
-    // registerSW();
+    registerSW();
   }, []);
 
   return (
