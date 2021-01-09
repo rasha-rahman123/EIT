@@ -254,7 +254,7 @@ setModalOpen(false)
             <>
               {" "}
               <Text fontSize={18} sx={{ fontWeight: 800, opacity: 0.6, pl: '10%' }}>
-                Confirm Password*
+           CONFIRM PASSWORD*
               </Text>
               <Box
                 as="input"
