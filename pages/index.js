@@ -8,10 +8,6 @@ import { AuthContext } from "../context/AuthContext";
 import Modal from 'react-modal'
 import Typist from 'react-typist'
 
-export const config = {
-  unstable_runtimeJS: false
-}
-
 const customStyles = {
   content : {
     top                   : '50%',
@@ -37,6 +33,10 @@ export default function Home() {
   const {token} = useContext(AuthContext)
   const [queries, setQueries] = useState()
   const [modalOpen, setModalOpen] = useState()
+  useEffect(() => {
+    Router.push('/login')
+  },[])
+
   useEffect(async () => {
     Router && (await setQueries(Router.query));
     Router && queries && queries.signup === 'success' &&  setModalOpen(true);
