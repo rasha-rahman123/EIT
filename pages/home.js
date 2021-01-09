@@ -116,7 +116,7 @@ const Home = (props) => {
   const { data } = useSWR(
     "/api/getMediumArticle",
     fetch("/api/getMediumArticle").then((r) => r.json())
-  );np
+  );
   useEffect(async () => {
     Router && (await setQueries(Router.query));
     Router &&
@@ -130,7 +130,6 @@ const Home = (props) => {
   const [doc, setDoc] = useState(null);
 
   const posts = data;
-
 
   const [postser, setPosts] = useState();
 
