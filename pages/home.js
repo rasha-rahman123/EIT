@@ -112,7 +112,7 @@ const Home = (props) => {
   const [queries, setQueries] = useState();
   const [score, setScore] = useState();
   const [modalOpen, setModalOpen] = useState(false);
-
+  
   const { data } = useSWR(
     "/api/getMediumArticle",
     fetch("/api/getMediumArticle").then((r) => r.json())
@@ -176,9 +176,11 @@ const Home = (props) => {
         top: 0,
         left: 0,
         right: 0,
+
         display: "flex",
         width: "100%",
         flexDirection: "column",
+        
         p: 4,
       }}
     >

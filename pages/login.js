@@ -121,7 +121,7 @@ setModalOpen(false)
         onSubmit={(e) => (register ? handleSignUp(e) : handleSubmit(e))}
         sx={{ p: 3, px: 4 }}
       >
-        <Text fontSize={3} fontWeight={800} sx={{pl: '10%'}}>{register ? "JOIN EIT" : "WELCOME BACK"}</Text>
+        <Text fontSize={3} fontWeight={800} sx={{pl: '10%'}}>{register ? "JOIN EIT" : "WELCOME BACK TO EIT"}</Text>
         {register && (
           <>
             <Box my={3} display={"flex"} sx={{ flexDirection: "column" }}>

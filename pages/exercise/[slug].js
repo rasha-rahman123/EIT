@@ -1,4 +1,5 @@
-import { Box, Button, Image, Text } from "rebass";
+import { Box, Button, Text } from "rebass";
+import Image from "next/image";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
@@ -53,14 +54,16 @@ export const ExercisePage = ({}) => {
     queries && (await setWhyInfo(j[0].whyInfo));
     (await queries) && taskInfo && timeInfo && whyInfo && setLoading(false);
   }, [Router, queries, whyInfo]);
-
+  const imageSize = 300;
   useEffect(() => {
-    liked && navigator.canShare && navigator.share({
-      url: 'http://localhost:3000/home',
-      title: 'Emotional Intellgence Trainer',
-      text: 'If you learn to master your emotions, you can master all'
-    })
-  },[liked])
+    liked &&
+      navigator.canShare &&
+      navigator.share({
+        url: "http://localhost:3000/home",
+        title: "Emotional Intellgence Trainer",
+        text: "If you learn to master your emotions, you can master all",
+      });
+  }, [liked]);
   return (
     <Box
       sx={{
@@ -147,8 +150,20 @@ export const ExercisePage = ({}) => {
             </Box>
 
             <Box fontSize={24}>
-              {liked ? <Text onClick={() => setLiked(false)} sx={{color: queries && queries.col}}> <AiFillHeart /></Text> : <Text onClick={() => setLiked(true)} > <AiOutlineHeart /></Text>}
-         
+              {liked ? (
+                <Text
+                  onClick={() => setLiked(false)}
+                  sx={{ color: queries && queries.col }}
+                >
+                  {" "}
+                  <AiFillHeart />
+                </Text>
+              ) : (
+                <Text onClick={() => setLiked(true)}>
+                  {" "}
+                  <AiOutlineHeart />
+                </Text>
+              )}
             </Box>
           </Box>
 
@@ -171,24 +186,34 @@ export const ExercisePage = ({}) => {
                 fontSize: 3,
                 fontWeight: 700,
                 color: "#FFFFFF",
-                mixBlendMode: 'overlay',
-                
+                mixBlendMode: "overlay",
+
                 py: 2,
               }}
             >
               {queries && queries.name}
             </Text>
           </Box>
-  
+
           {queries && queries.slug && args ? (
-            <Box display="flex" flexDirection="column" sx={{textAlign:'center'}}><Image
-              maxWidth={250}
-              maxHeight={250}
-              sx={{margin: '0 auto'}}
-              src={`/story/${args
-                .filter((x) => x.slug === queries.slug)
-                .map((x) => x.slug)}-1.png`}
-            /><a href="https://storyset.com/work">Illustration by Freepik Storyset</a></Box>
+            <Box
+              display="flex"
+              flexDirection="column"
+              sx={{ textAlign: "center" }}
+            >
+              <Box sx={{ margin: "0 auto" }}>
+                <Image
+                  layout="intrinsic"
+                  width={imageSize} height={imageSize}
+                  src={`/story/${args
+                    .filter((x) => x.slug === queries.slug)
+                    .map((x) => x.slug)}-1.png`}
+                />
+              </Box>
+              <a href="https://storyset.com/work">
+                Illustration by Freepik Storyset
+              </a>
+            </Box>
           ) : (
             <Loading width={100} height={100} />
           )}
@@ -211,7 +236,7 @@ export const ExercisePage = ({}) => {
                 borderRadius: 30,
                 bg: queries && queries.col,
                 color: "brayyy",
-         
+
                 fontSize: 18,
                 fontWeight: 700,
                 mt: 4,
@@ -221,7 +246,10 @@ export const ExercisePage = ({}) => {
                 },
               }}
             >
-             <Text sx={{    color: 'white',   mixBlendMode: 'overlay',}}> Start {timeInfo && `(${timeInfo})`}</Text>
+              <Text sx={{ color: "white", mixBlendMode: "overlay" }}>
+                {" "}
+                Start {timeInfo && `(${timeInfo})`}
+              </Text>
             </Button>
           </Box>
           <Box mt={5}>
@@ -231,7 +259,7 @@ export const ExercisePage = ({}) => {
             </Text>
           </Box>
 
-          <Box sx={{ my: 4 , mb: 5}}>
+          <Box sx={{ my: 4, mb: 5 }}>
             <Text fontWeight="800">Why This Works*</Text>
             <Text as="p" opacity={0.5}>
               {whyInfo && whyInfo}

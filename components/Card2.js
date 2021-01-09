@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Box, Image, Text } from "rebass";
-
+import { Box, Text } from "rebass";
+import Image from 'next/image'
 export default function Card2({ cardInfo }) {
   const [hover, setHover] = useState(false);
 
@@ -66,7 +66,7 @@ useEffect(async () => {
           boxShadow: hover && "0px 0px 3px #00000060,0px 0px 10px #00000015",
         }}
       >
-        <Image src={`/story/${cardInfo.color}.png`} />
+        <Image src={`/story/${cardInfo.color}.png`} width={200} height={200} layout="intrinsic"/>
         <Text sx={{ fontSize: 3, fontWeight: 800, lineHeight: "100%" }}>
           {name && name}
           <br />
