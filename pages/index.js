@@ -40,9 +40,7 @@ export default function Home() {
     Router && queries && queries.signup === 'success' &&  setModalOpen(true);
   }, [Router, queries]);
 
-  useEffect(() => {
-    Router.push('/login')
-  },[])
+
   return (
    <Box sx={{zIndex: 10}}>
    {/* <Box
