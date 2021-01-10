@@ -293,21 +293,3 @@ export const cogTrainer = ({}) => {
 
 export default cogTrainer;
 
-export async function getServerSideProps(context) {
-  try {
-    const cookies = await nookies.get(context);
-    const token = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/getToken?token=${cookies.token}`
-    ).then((data) => data.json());
-
-    return {
-      props: {
-        session: token,
-      },
-    };
-  } catch (err) {
-    context.res.writeHead(302, { location: "/login" });
-    context.res.end();
-    return { props: [] };
-  }
-}

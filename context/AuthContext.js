@@ -15,12 +15,11 @@ useEffect(() => {
     return firebase.auth().onIdTokenChanged(async (user) => {
       if (!user){
         setUser(null)
-        nookies.set(undefined, 'token', "",{});
+        nookies.destroy(null,'token')
         return;
       }
-      const token = await user.getIdToken();
+      const token = await user.getIdToken(true);
       setUser(user);
-     
       nookies.set(undefined,"token", token, {});
 
     })
@@ -37,10 +36,11 @@ useEffect(() => {
 function logout() {
     firebase.auth().signOut();
     setUser(null)
-    nookies.set(undefined, 'token', "",{});
+
+    nookies.destroy(null,'token')
     //set the token back to original state
     setToken(null)
-    Router.push("/");
+    window.location.assign('/');
 }
 
 function login(email, pass) {

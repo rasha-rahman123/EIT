@@ -10,7 +10,8 @@ import Head from "next/head";
 import { ThemeProvider } from "theme-ui";
 import theme from "../styles/theme";
 import { DefaultSeo } from "next-seo";
-import nookies from 'nookies'
+import { parseCookies } from "nookies";
+import Router from 'next/router'
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
@@ -25,11 +26,13 @@ async function registerSW() {
   }
 }
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps, token }) {
   useEffect(() => {
     loadProgressBar();
     registerSW();
   }, []);
+
+
 
   return (
     <AuthProvider>
@@ -61,8 +64,7 @@ function MyApp({ Component, pageProps }) {
                 width: 1125,
                 height: 2436,
                 alt: "EIT External Resource Screen",
-              }
-
+              },
             ],
             site_name: "Emotional Intelligence Trainer (EIT)",
           }}
@@ -123,17 +125,13 @@ function MyApp({ Component, pageProps }) {
           />
 
           <link rel="manifest" href="/manifest.json" />
-          <link
-            href="/logo/favicon/favicon.ico"
-            rel="shortcut icon"
-          
-          />
-     
+          <link href="/logo/favicon/favicon.ico" rel="shortcut icon" />
+
           <link rel="apple-touch-icon" href="/apple-icon.png"></link>
           <meta name="theme-color" content="#317EFB" />
         </Head>
-        <Layout>
-          <Component {...pageProps} />
+        <Layout token={token}>
+          <Component {...pageProps} token={token}/>
         </Layout>
       </ThemeProvider>
     </AuthProvider>
@@ -141,3 +139,44 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
+
+function redirectUser(ctx, location) {
+  if (ctx.req) {
+      ctx.res.writeHead(302, { Location: location });
+      ctx.res.end();
+  } else {
+      Router.push(location, {query:{prevPath: ctx.pathname}});
+  }
+}
+
+MyApp.getInitialProps = async ({ Component, ctx }) => {
+  let pageProps = {};
+
+  const jwt = parseCookies(ctx).token
+  const domain = await process.env.NEXT_PUBLIC_DOMAIN
+  const token = await jwt && fetch(
+    `${domain}/api/getToken?token=${jwt}`
+  ).then((data) => data.json());
+  
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
+
+  if (!jwt) {
+    switch(ctx.pathname.substr(0,5)){
+      case '/home':
+        return redirectUser(ctx,'/login')
+        case '/exer':
+          return redirectUser(ctx,'/login')
+        case '/prof':
+          return redirectUser(ctx, '/login')
+    }
+  
+    
+}
+
+return {
+  pageProps,
+  token: await token
+}
+};

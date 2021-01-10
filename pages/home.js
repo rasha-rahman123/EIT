@@ -6,14 +6,12 @@ import { AuthContext } from "../context/AuthContext";
 import { MdEventAvailable, MdSpeaker } from "react-icons/md";
 import { IoBandage, IoBed, IoBrush, IoFastFood } from "react-icons/io5";
 import Link from "next/link";
-import useSWR from "swr";
 import firebase from "firebase";
 import Modal from "react-modal";
 import Typist from "react-typist";
 import { VscFeedback, VscMortarBoard } from "react-icons/vsc";
 import Card2 from "../components/Card2";
 import Loading from "../components/Loading";
-import nookies from "nookies";
 const customStyles = {
   content: {
     top: "50%",
@@ -105,8 +103,8 @@ const helpRec = [
     slug: "5-sleep-tips",
   },
 ];
-const Home = ({session}) => {
-  const { token, user, logout, uuid } = useContext(AuthContext);
+const Home = ({session, token}) => {
+  const { user, logout } = useContext(AuthContext);
   const [userEmail, setUserEmail] = useState(null);
   const [search, setSearch] = useState("");
   const [profileHover, setProfileHover] = useState();
@@ -114,6 +112,11 @@ const Home = ({session}) => {
   const [score, setScore] = useState();
   const [modalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState();
+  const [uid, setUid] = useState();
+
+  useEffect(()=>{
+    setUid(token['uid'])
+  },[token])
 
   useEffect(async () => {
     var data = await fetch("/api/getMediumArticle").then((r) => r.json());
@@ -137,12 +140,12 @@ const Home = ({session}) => {
   const [posts, setP] = useState();
 
   useEffect(() => {
-    session  && loadProfile();
-  }, [session]);
+    uid  && loadProfile();
+  }, [uid]);
 
   async function loadProfile() {
     const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(session.uid).get();
+    const doc = await db.collection("Users").doc(uid).get();
     if (!doc.exists) {
     } else {
       setDoc(doc.data());
@@ -150,16 +153,16 @@ const Home = ({session}) => {
   }
 
   useEffect(() => {
-    session &&
+    token &&
       firebase
         .firestore()
         .collection("Users")
-        .doc(session.uid)
+        .doc(token.uid)
         .get()
         .then((data) =>
           data.data()["score"] ? setScore(data.data()["score"]) : setScore(0)
         );
-  }, [session]);
+  }, [token]);
 
   return (
     <Box
@@ -390,21 +393,3 @@ const Home = ({session}) => {
 export default Home;
 
 
-export async function getServerSideProps(context) {
-  try {
-    const cookies = await nookies.get(context);
-    const token = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/getToken?token=${cookies.token}`
-    ).then((data) => data.json());
-
-    return {
-      props: {
-        session: token,
-      },
-    };
-  } catch (err) {
-    context.res.writeHead(302, { location: "/login" });
-    context.res.end();
-    return { props: [] };
-  }
-}

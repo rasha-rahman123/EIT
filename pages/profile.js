@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Router from "next/router";
 import firebase from "firebase";
-import nookies, { parseCookies } from 'nookies'
+import { parseCookies } from 'nookies'
 const Profile = (props) => {
   const { token, logout, user } = useContext(AuthContext);
   const [doc, setDoc] = useState(null);
@@ -25,7 +25,7 @@ const Profile = (props) => {
 
   async function loadProfile() {
     const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(props.session.uid).get();
+    const doc = await db.collection("Users").doc(props.token.uid).get();
     if (!doc.exists) {
     } else {
       setDoc(doc.data());
@@ -155,21 +155,3 @@ const Profile = (props) => {
 
 export default Profile;
 
-export async function getServerSideProps(context) {
-  try {
-    const cookies = await nookies.get(context);
-    const token = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/getToken?token=${cookies.token}`
-    ).then((data) => data.json());
-
-    return {
-      props: {
-        session: token,
-      },
-    };
-  } catch (err) {
-    context.res.writeHead(302, { location: "/login" });
-    context.res.end();
-    return { props: [] };
-  }
-}

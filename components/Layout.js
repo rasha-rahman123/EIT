@@ -1,6 +1,6 @@
 import { Box, Text } from "rebass";
 import { CgProfile } from "react-icons/cg";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { memo, useContext, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -27,34 +27,23 @@ const sendEmail = async (email,message) => {
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 
-export const Layout = ({ children,session }) => {
+export const Layout = ({ children,session,token }) => {
 
-  const logo = useMemo(() => <Logo width={32} animation={false} />,[ ])
+  const logo = useMemo(() => <Logo width={32} animation={false} />)
 
-  const { logout, token } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
 const [doc, setDoc] = useState(null);
   const [uuid, setUuid] = useState()
 
   const router = useRouter();
-  useEffect(async () => {
-    if (router.pathname === '/' || router.pathname === '/login') {
-      return;
-    }
-    const cookies =  parseCookies()
-    const {token} = await cookies
-    const data = await fetch(`/api/getToken?token=${token}`).then(data => data.json())
-    const {uid} = data;
-    setUuid(uid)
- 
-  },[router])
 
   useEffect(() => {
-    uuid && loadProfile();
-  }, [uuid]);
+    token && loadProfile();
+  }, [token]);
 
   async function loadProfile() {
     const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(uuid).get();
+    const doc = await db.collection("Users").doc(token.uid).get();
     if (!doc.exists) {
     } else {
       setDoc(doc.data());

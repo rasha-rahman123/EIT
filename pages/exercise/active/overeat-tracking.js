@@ -7,7 +7,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import Table from "../../../components/Table";
 import Loading from "../../../components/Loading";
 import nookies from 'nookies'
-export const overeat = ({}) => {
+export const overeat = ({token}) => {
   const inputRef = useRef(null);
   const [arr, setArr] = useState([]);
   const [arr2, setArr2] = useState([]);
@@ -19,11 +19,11 @@ export const overeat = ({}) => {
   const [showThisLine2, setShowThisLine2] = useState(false);
   const [displayResults, setDisplayResults] = useState(false);
   const date = new Date();
-  const { uuid } = useContext(AuthContext);
+
   const [otherData, setOtherData] = useState();
   const rout = useRouter()
   useEffect(() => {
-    displayResults && uuid && saveToCloud();
+    displayResults && token.uid && saveToCloud();
   }, [displayResults]);
 
   function handleSubmit() {
@@ -50,7 +50,7 @@ export const overeat = ({}) => {
   }
 
   async function finishTrack() {
-    const db = firebase.firestore().collection("Users").doc(uuid);
+    const db = firebase.firestore().collection("Users").doc(token.uid);
     const res = await db.get();
     await db.set(
       { score: res.data()["score"] ? res.data()["score"] + 1 : 1 },
@@ -72,16 +72,16 @@ export const overeat = ({}) => {
     const get = await firebase
       .firestore()
       .collection("Food Tracker")
-      .doc(uuid)
+      .doc(token.uid)
       .get();
 
-    const exists = uuid && get.exists;
+    const exists = token.uid && get.exists;
     exists && setOtherData(get.data());
     if (!exists) {
       firebase
         .firestore()
         .collection("Food Tracker")
-        .doc(uuid)
+        .doc(token.uid)
         .set({ 1: data, 2: data, 3: data });
     } else {
       const prevData = await [get.data()];
@@ -91,7 +91,7 @@ export const overeat = ({}) => {
         (await firebase
           .firestore()
           .collection("Food Tracker")
-          .doc(uuid)
+          .doc(token.uid)
           .set({
             1: data1,
             2: { ...prevData[0][1] },
@@ -294,21 +294,3 @@ export const overeat = ({}) => {
 
 export default overeat;
 
-export async function getServerSideProps(context) {
-  try {
-    const cookies = await nookies.get(context);
-    const ten = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/getToken?token=${cookies.token}`
-    )
-    const res = await ten.json();
-    return {
-      props: {
-        session: res,
-      }
-    };
-  } catch (err) {
-    context.res.writeHead(302, { location: "/login" });
-    context.res.end();
-    return { props: [] };
-  }
-}

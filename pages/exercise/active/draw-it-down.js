@@ -10,7 +10,7 @@ import styles from "../../../styles/Draw.module.css";
 import useLongPress from "../../../hooks/useLongPress";
 import nookies from 'nookies'
 
-export const drawItDown = ({session}) => {
+export const drawItDown = ({token}) => {
   const [answerHover, setAnswerHover] = useState();
   const [answerHoverTemp, setAnswerHoverTemp] = useState();
   const [wordAnswer, setWordAnswer] = useState("Please Select An Option");
@@ -23,16 +23,16 @@ export const drawItDown = ({session}) => {
   const [drawing, setDrawing] = useState();
   const [prevPic, setPrevPic] = useState();
   const [tappedColor, setTappedColor] = useState();
-  const { token, uuid } = useContext(AuthContext);
+  const {  uuid } = useContext(AuthContext);
   const [doc, setDoc] = useState(null);
 
   useEffect(() => {
-    session && loadProfile();
-  }, [session]);
+    token && loadProfile();
+  }, [token]);
 
   async function loadProfile() {
     const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(session.uid).get();
+    const doc = await db.collection("Users").doc(token.uid).get();
     if (!doc.exists) {
     } else {
       setDoc(doc.data());
@@ -58,7 +58,7 @@ export const drawItDown = ({session}) => {
   const opts = ["0", "1", "2", "3", "4", "5"];
 
   async function finishTrack() {
-    const db = firebase.firestore().collection("Users").doc(session.uid);
+    const db = firebase.firestore().collection("Users").doc(token.uid);
     const res = await db.get();
     await db.set(
       { score: res.data()["score"] ? res.data()["score"] + 1 : 1 },
@@ -86,7 +86,7 @@ export const drawItDown = ({session}) => {
     await firebase
       .firestore()
       .collection("exercise draw-it-down")
-      .doc(session.uid)
+      .doc(token.uid)
       .set({ drawing })
       .then(() => {
         finishTrack();
@@ -140,7 +140,7 @@ export const drawItDown = ({session}) => {
     await firebase
       .firestore()
       .collection("exercise draw-it-down")
-      .doc(session.uid)
+      .doc(token.uid)
       .get()
       .then((data) => {
         setPrevPic(data.data());
@@ -444,21 +444,3 @@ export const drawItDown = ({session}) => {
 
 export default drawItDown;
 
-export async function getServerSideProps(context) {
-  try {
-    const cookies = await nookies.get(context);
-    const token = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN}/api/getToken?token=${cookies.token}`
-    ).then((data) => data.json());
-
-    return {
-      props: {
-        session: token,
-      },
-    };
-  } catch (err) {
-    context.res.writeHead(302, { location: "/login" });
-    context.res.end();
-    return { props: [] };
-  }
-}

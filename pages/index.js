@@ -49,7 +49,7 @@ export default function Home() {
     isApple && close;
   }, [isApple]);
 
-  const logo = useMemo(() => <Logo width={48} animation={false} />,[ ])
+  const logo = useMemo(() => <Logo width={48} animation={true} />,[ ])
 
   useEffect(() => {
   
