@@ -47,19 +47,19 @@ export default function Home() {
     }, 7000);
     isApple && close;
   }, [isApple]);
-  // useEffect(() => {
-  //   navigator.getInstalledRelatedApps().then((data) => console.log(data));
-  //   if (
-  //     /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-  //   ) {
-  //     setIsMobile(true);
-  //   } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-  //     setIsMobile(true);
-  //     setIsApple(true);
-  //   } else {
-  //     return;
-  //   }
-  // }, []);
+  useEffect(() => {
+  
+    if (
+      /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    ) {
+      setIsMobile(true);
+    } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      setIsMobile(true);
+      setIsApple(true);
+    } else {
+      return;
+    }
+  }, []);
 
   return (
     <Box
