@@ -46,10 +46,7 @@ const Login = () => {
     authContext.login(email, pass);
   };
 const logo = useMemo(() => <Logo width={24} animation={false} />,[ ])
-  useEffect(() => {
-    token && Router.push("/home");
-  }, [token]);
-
+  
   const weakPass = () => toast("Password not strong enough");
   const handlePassReset = async () => {
     if (email.length === 0) {

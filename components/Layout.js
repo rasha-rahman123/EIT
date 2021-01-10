@@ -42,7 +42,7 @@ const [doc, setDoc] = useState(null);
     }
     const cookies =  parseCookies()
     const {token} = await cookies
-    const data = await fetch(`/api/getToken?token=${token}`).then(data => data.json(), err => router.push('/login',{query:{prev: router.pathname}}))
+    const data = await fetch(`/api/getToken?token=${token}`).then(data => data.json())
     const {uid} = data;
     setUuid(uid)
  
