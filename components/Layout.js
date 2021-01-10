@@ -1,6 +1,6 @@
 import { Box, Text } from "rebass";
 import { CgProfile } from "react-icons/cg";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -28,6 +28,8 @@ const sendEmail = async (email,message) => {
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 
 export const Layout = ({ children,session }) => {
+
+  const logo = useMemo(() => <Logo width={32} animation={false} />,[ ])
 
   const { logout, token } = useContext(AuthContext);
 const [doc, setDoc] = useState(null);
@@ -139,7 +141,7 @@ const [doc, setDoc] = useState(null);
                   },
                 }}
               >
-              <Logo width={32} animation={false}/> <Text ml={1}> E I T </Text>   <Box sx={{ display: "inline-block" }}>
+            {logo}<Text ml={1}> E I T </Text>   <Box sx={{ display: "inline-block" }}>
           <Text
             sx={{
               display: "flex",

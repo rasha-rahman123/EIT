@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { Box, Button, Text } from "rebass";
 import Layout from "../components/Layout";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Modal from "react-modal";
 import Typist from "react-typist";
@@ -48,6 +48,9 @@ export default function Home() {
     }, 7000);
     isApple && close;
   }, [isApple]);
+
+  const logo = useMemo(() => <Logo width={48} animation={false} />,[ ])
+
   useEffect(() => {
   
     if (
@@ -115,7 +118,7 @@ export default function Home() {
           flexDirection: 'column'
         }}
       >
-        <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}><Logo width={48} height={48} /> Emotional</Box>
+        <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>{logo} Emotional</Box>
 
        <Box> Intelligence</Box>
       <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>  Trainer  <Box sx={{ display: "inline-block" }}>

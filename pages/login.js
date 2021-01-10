@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Box, Button, Text } from "rebass";
 import Router from "next/router";
 import firebase from "firebase/app";
@@ -45,7 +45,7 @@ const Login = () => {
     event.preventDefault();
     authContext.login(email, pass);
   };
-
+const logo = useMemo(() => <Logo width={24} animation={false} />,[ ])
   useEffect(() => {
     token && Router.push("/home");
   }, [token]);
@@ -140,7 +140,7 @@ const Login = () => {
         sx={{ p: 3, px: 4 }}
       >
         <Text fontSize={3} fontWeight={800} sx={{ pl: "10%", display: 'flex', flexDirection: 'row' }}>
-        <Logo width={24} animation={false} />
+       {logo}
           {register ? (
             <Text ml={2}>
             JOIN EIT
