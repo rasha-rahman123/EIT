@@ -380,6 +380,7 @@ const Home = ({session}) => {
               </a>
             </Link>
           ))}
+          
         <a href="https://storyset.com/work">Illustration by Freepik Storyset</a>
       </Box>
     </Box>
