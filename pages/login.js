@@ -110,9 +110,10 @@ setModalOpen(false)
         top: 0,
         left: 0,
         right: 0,
-        minHeight: "100vh",
+
         bg: "rgba(255, 255, 255,0.2)",
-        pt: 6,
+        pt: [2,4],
+        pb: 6,
         color: '#2c2c2e'
       }}
     >

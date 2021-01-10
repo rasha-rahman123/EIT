@@ -203,9 +203,9 @@ export const Layout = ({ children }) => {
           </Box>{" "}
           <Box
             sx={{
-              minHeight: "83vh",
-              mt: 3,
-              maxHeight: "83vh",
+              height: router.pathname  == '/' || router.pathname == '/login' ? "90vh" : "83vh",
+              mt: router.pathname !== '/' && router.pathname !== '/login' && 3,
+   
               background: "rgba(255, 255, 255,1)",
               position: "relative",
               borderRadius: "12px 12px 12px 12px",
