@@ -59,7 +59,7 @@ export const ExercisePage = ({}) => {
     liked &&
       navigator.canShare &&
       navigator.share({
-        url: "https://eitrainer.app/home",
+        url: "${process.env.NEXT_PUBLIC_DOMAIN}/home",
         title: "Emotional Intellgence Trainer",
         text: "If you learn to master your emotions, you can master all",
       });
@@ -277,7 +277,7 @@ export async function getServerSideProps(context) {
   try {
     const cookies = await nookies.get(context);
     const token = await fetch(
-      `https://eitrainer.app/api/getToken?token=${cookies.token}`
+      `${process.env.NEXT_PUBLIC_DOMAIN}/api/getToken?token=${cookies.token}`
     ).then((data) => data.json());
 
     return {

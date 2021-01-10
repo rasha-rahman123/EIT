@@ -448,7 +448,7 @@ export async function getServerSideProps(context) {
   try {
     const cookies = await nookies.get(context);
     const token = await fetch(
-      `https://eitrainer.app/api/getToken?token=${cookies.token}`
+      `${process.env.NEXT_PUBLIC_DOMAIN}/api/getToken?token=${cookies.token}`
     ).then((data) => data.json());
 
     return {
