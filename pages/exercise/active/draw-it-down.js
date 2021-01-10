@@ -2,12 +2,15 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Box, Button, Image, Text } from "rebass";
 import SignatureCanvas from "react-signature-canvas";
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/storage";
+import "firebase/firestore";
 import { AuthContext } from "../../../context/AuthContext";
 import styles from "../../../styles/Draw.module.css";
 import useLongPress from "../../../hooks/useLongPress";
+import nookies from 'nookies'
 
-export const drawItDown = ({}) => {
+export const drawItDown = ({session}) => {
   const [answerHover, setAnswerHover] = useState();
   const [answerHoverTemp, setAnswerHoverTemp] = useState();
   const [wordAnswer, setWordAnswer] = useState("Please Select An Option");
@@ -24,12 +27,12 @@ export const drawItDown = ({}) => {
   const [doc, setDoc] = useState(null);
 
   useEffect(() => {
-    token && uuid && loadProfile();
-  }, [uuid, token]);
+    session && loadProfile();
+  }, [session]);
 
   async function loadProfile() {
     const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(uuid).get();
+    const doc = await db.collection("Users").doc(session.uid).get();
     if (!doc.exists) {
     } else {
       setDoc(doc.data());
@@ -55,7 +58,7 @@ export const drawItDown = ({}) => {
   const opts = ["0", "1", "2", "3", "4", "5"];
 
   async function finishTrack() {
-    const db = firebase.firestore().collection("Users").doc(uuid);
+    const db = firebase.firestore().collection("Users").doc(session.uid);
     const res = await db.get();
     await db.set(
       { score: res.data()["score"] ? res.data()["score"] + 1 : 1 },
@@ -80,10 +83,15 @@ export const drawItDown = ({}) => {
   ];
 
   const saveCurrentPic = async () => {
-      await firebase.firestore().collection('exercise draw-it-down').doc(uuid).set({drawing}).then(() => {
-        finishTrack()
-      })
-  }
+    await firebase
+      .firestore()
+      .collection("exercise draw-it-down")
+      .doc(session.uid)
+      .set({ drawing })
+      .then(() => {
+        finishTrack();
+      });
+  };
 
   const innerCanvasRef = useRef(null);
   const getDepressionText = (score) => {
@@ -132,36 +140,34 @@ export const drawItDown = ({}) => {
     await firebase
       .firestore()
       .collection("exercise draw-it-down")
-      .doc(uuid)
+      .doc(session.uid)
       .get()
       .then((data) => {
-        setPrevPic(data.data())
-      
+        setPrevPic(data.data());
       });
   };
 
   useEffect(() => {
     drawingsEnded && getPicture();
   }, [drawingsEnded]);
-  const createImage = async () => {
-    var url = await canvasRef.current.toDataURL("image/png");
-    var date = new Date();
+  const [pic, setPic] = useState()
 
-    var image = await document.createElement("img");
-    image.src = await url;
-    image.style.width = "100%";
-    image.style.height = "95vh";
-    var temp = await document.createElement("canvas");
+
+  const createImage = async () => {
+    var image = await createImageElement();
+    var date = new Date();
+    var temp =  document.createElement("canvas");
     temp.width = (window.innerWidth - window.innerWidth / 3) * 3;
     temp.height = 1200;
-    var ctx = await temp.getContext("2d");
+    var ctx = temp.getContext("2d");
     ctx.fillStyle = hex ? hex : "#FFFFFF";
     ctx.fillRect(0, 0, temp.width, temp.height);
     ctx.drawImage(image, 0, 0);
     ctx.font = "40px Sarala";
     ctx.fillStyle = "#00000030";
     ctx.fillText("@" + doc.displayName, 10, 140);
-    ctx.fillText(getDepressionText(totalScore), 10, 180);
+    // ctx.fillText(getDepressionText(totalScore), 10, 180);
+    ctx.fillText(pic, 10, 180);
     ctx.fillText(
       date.getMonth() + 1 + " / " + date.getDay() + " / " + date.getFullYear(),
       10,
@@ -171,16 +177,25 @@ export const drawItDown = ({}) => {
     ctx.font = "90px Sarala";
     // Create gradient
     var gradient = ctx.createLinearGradient(0, 0, temp.width, 0);
-    gradient.addColorStop("0", " magenta");
-    gradient.addColorStop("0.5", "blue");
-    gradient.addColorStop("1.0", "red");
+
     // Fill with gradient
-    ctx.fillStyle = gradient;
     ctx.fillText("EIT", 10, 90);
     var file = await temp.toDataURL();
 
     await setDrawing(file);
   };
+
+  async function createImageElement() {
+    var url = await canvasRef.current.getCanvas().toDataURL("image/png");
+
+    var image = document.createElement("img");
+    image.src = pic;
+    image.style.width = "100%";
+    image.style.height = "95vh";
+    return image
+
+  }
+
   useEffect(() => {
     answerHoverTemp &&
       setWordAnswer(() => {
@@ -236,26 +251,25 @@ export const drawItDown = ({}) => {
       >
         {drawingsEnded && (
           <Box>
-          
             <Box my={2} display="flex" justifyContent="space-between">
-            <Text fontSize={6} fontWeight={800} color="brayyy" mb={3}>
-              {" "}
-              Your Results
-            </Text>
-                <Button
-                  color="black"
-                  bg={"#FFFF99"}
-                  onClick={() => {
-                    saveCurrentPic()
-                  }}
-                >
-                  FINISH EXERCISE
-                </Button>
-              </Box>
+              <Text fontSize={6} fontWeight={800} color="brayyy" mb={3}>
+                {" "}
+                Your Results
+              </Text>
+              <Button
+                color="black"
+                bg={"#FFFF99"}
+                onClick={() => {
+                  saveCurrentPic();
+                }}
+              >
+                FINISH EXERCISE
+              </Button>
+            </Box>
             <Text>YOUR DRAWING HAS A WATERMARKED DEPRESSION SCORE</Text>
             {drawing && <Image src={drawing} />}
             <Text>PREVIOUS DRAWINGS/SCORES</Text>
-            {prevPic && <Image src={prevPic['drawing']} />}
+            {prevPic && <Image src={prevPic["drawing"]} />}
           </Box>
         )}
         {questionsEnded && !drawingsEnded && (
@@ -264,7 +278,7 @@ export const drawItDown = ({}) => {
               GOOD! <br />
               NOW DRAW YOUR FEELINGS OUT. TAP/DOUBLE TAP COLORS.
             </Text>
-            
+
             <Box
               sx={{
                 display: "flex",
@@ -351,6 +365,7 @@ export const drawItDown = ({}) => {
                 penColor={colorNum}
                 maxWidth={brushSize}
                 ref={canvasRef}
+                onEnd={() => setPic(canvasRef.current.toDataURL("image/png"))}
                 backgroundColor={hex}
                 canvasProps={{
                   className: styles.sigCanvas,
@@ -428,3 +443,22 @@ export const drawItDown = ({}) => {
 };
 
 export default drawItDown;
+
+export async function getServerSideProps(context) {
+  try {
+    const cookies = await nookies.get(context);
+    const token = await fetch(
+      `http://localhost:3000/api/getToken?token=${cookies.token}`
+    ).then((data) => data.json());
+
+    return {
+      props: {
+        session: token,
+      },
+    };
+  } catch (err) {
+    context.res.writeHead(302, { location: "/login" });
+    context.res.end();
+    return { props: [] };
+  }
+}

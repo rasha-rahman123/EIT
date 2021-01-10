@@ -7,6 +7,7 @@ import Typist from "react-typist";
 import styles from "../../../styles/Home.module.css";
 import firebase from "firebase";
 import { AuthContext } from "../../../context/AuthContext";
+import nookies from 'nookies'
 
 export const RepeatedSec = ({}) => {
   var device, recorder;
@@ -302,3 +303,22 @@ useEffect(() => {
 };
 
 export default RepeatedSec;
+
+export async function getServerSideProps(context) {
+  try {
+    const cookies = await nookies.get(context);
+    const token = await fetch(
+      `http://localhost:3000/api/getToken?token=${cookies.token}`
+    ).then((data) => data.json());
+
+    return {
+      props: {
+        session: token,
+      },
+    };
+  } catch (err) {
+    context.res.writeHead(302, { location: "/login" });
+    context.res.end();
+    return { props: [] };
+  }
+}

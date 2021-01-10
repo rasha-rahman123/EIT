@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Modal from "react-modal";
 import Typist from "react-typist";
+import Logo from "../components/Logo";
 
 const customStyles = {
   content: {
@@ -108,13 +109,16 @@ export default function Home() {
           
           position: "relative",
           zIndex: 2,
+          justifyContent: 'center',
+          alignTracks: 'center',
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
-        Emotional
-        <br />
-        Intelligence <br />
-        Trainer{" "}
-        <Box sx={{ display: "inline-block" }}>
+        <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}><Logo width={48} height={48} /> Emotional</Box>
+
+       <Box> Intelligence</Box>
+      <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>  Trainer  <Box sx={{ display: "inline-block" }}>
           <Text
             sx={{
               display: "flex",
@@ -125,13 +129,15 @@ export default function Home() {
               justifyContent: "center",
               alignItems: "center",
               px: 1,
+              mx: 2,
               borderRadius: 6,
               color: "white",
             }}
           >
             BETA
           </Text>
-        </Box>
+        </Box></Box>
+       
       </Text>
       <Box
         sx={{

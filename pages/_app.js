@@ -1,7 +1,7 @@
 import Layout from "../components/Layout";
 import { AuthProvider } from "../context/AuthContext";
 import "../styles/globals.css";
-import firebase from "firebase/app";
+import firebase from "firebase";
 import firebaseConfig from "../config/firebase";
 import { loadProgressBar } from "axios-progress-bar";
 import "../prog.css";
@@ -10,6 +10,7 @@ import Head from "next/head";
 import { ThemeProvider } from "theme-ui";
 import theme from "../styles/theme";
 import { DefaultSeo } from "next-seo";
+import nookies from 'nookies'
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
@@ -123,17 +124,11 @@ function MyApp({ Component, pageProps }) {
 
           <link rel="manifest" href="/manifest.json" />
           <link
-            href="/favicon-16x16.png"
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
+            href="/logo/favicon/favicon.ico"
+            rel="shortcut icon"
+          
           />
-          <link
-            href="/favicon-32x32.png"
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-          />
+     
           <link rel="apple-touch-icon" href="/apple-icon.png"></link>
           <meta name="theme-color" content="#317EFB" />
         </Head>

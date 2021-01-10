@@ -13,6 +13,7 @@ import Typist from "react-typist";
 import { VscFeedback, VscMortarBoard } from "react-icons/vsc";
 import Card2 from "../components/Card2";
 import Loading from "../components/Loading";
+import nookies from "nookies";
 const customStyles = {
   content: {
     top: "50%",
@@ -104,7 +105,7 @@ const helpRec = [
     slug: "5-sleep-tips",
   },
 ];
-const Home = (props) => {
+const Home = ({session}) => {
   const { token, user, logout, uuid } = useContext(AuthContext);
   const [userEmail, setUserEmail] = useState(null);
   const [search, setSearch] = useState("");
@@ -117,8 +118,8 @@ const Home = (props) => {
   useEffect(async () => {
     var data = await fetch("/api/getMediumArticle").then((r) => r.json());
     await setData(data);
-    setPosts(data)
-    setP(data)
+    setPosts(data);
+    setP(data);
   }, []);
   useEffect(async () => {
     Router && (await setQueries(Router.query));
@@ -136,30 +137,29 @@ const Home = (props) => {
   const [posts, setP] = useState();
 
   useEffect(() => {
-    token && uuid && loadProfile();
-  }, [uuid, token]);
+    session  && loadProfile();
+  }, [session]);
 
-   async function loadProfile() {
+  async function loadProfile() {
     const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(uuid).get();
+    const doc = await db.collection("Users").doc(session.uid).get();
     if (!doc.exists) {
     } else {
       setDoc(doc.data());
-      
     }
   }
 
   useEffect(() => {
-    uuid &&
+    session &&
       firebase
         .firestore()
         .collection("Users")
-        .doc(uuid)
+        .doc(session.uid)
         .get()
         .then((data) =>
           data.data()["score"] ? setScore(data.data()["score"]) : setScore(0)
         );
-  }, [uuid]);
+  }, [session]);
 
   return (
     <Box
@@ -188,7 +188,7 @@ const Home = (props) => {
           <Loading width={300} height={28} />
         )}
       </Text>
-      
+
       <Text
         sx={{
           fontSize: 24,
@@ -208,24 +208,23 @@ const Home = (props) => {
           {" (" + taskCards.length})
         </Text>
         <Box
-        as="input"
-
-        placeholder={"Search"}
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        width={[200]}
-        fontSize={14}
-        sx={{
-          bg: "none",
-          border: "none",
-          background: "rgba(0, 0, 0,0.05)",
-          p: 2,
-          px: 3,
-          borderRadius: 5,
-          boxShadow: "inset 0px 0px 3px #00000030",
-          display: 'block'
-        }}
-      ></Box>
+          as="input"
+          placeholder={"Search"}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          width={[200]}
+          fontSize={14}
+          sx={{
+            bg: "none",
+            border: "none",
+            background: "rgba(0, 0, 0,0.05)",
+            p: 2,
+            px: 3,
+            borderRadius: 5,
+            boxShadow: "inset 0px 0px 3px #00000030",
+            display: "block",
+          }}
+        ></Box>
       </Text>
       <Box
         display="flex"
@@ -365,7 +364,6 @@ const Home = (props) => {
           },
         }}
       >
-      
         {!modalOpen &&
           postser &&
           postser["rss"] &&
@@ -382,10 +380,30 @@ const Home = (props) => {
               </a>
             </Link>
           ))}
-            <a href="https://storyset.com/work">Illustration by Freepik Storyset</a>
+        <a href="https://storyset.com/work">Illustration by Freepik Storyset</a>
       </Box>
     </Box>
   );
 };
 
 export default Home;
+
+
+export async function getServerSideProps(context) {
+  try {
+    const cookies = await nookies.get(context);
+    const token = await fetch(
+      `http://localhost:3000/api/getToken?token=${cookies.token}`
+    ).then((data) => data.json());
+
+    return {
+      props: {
+        session: token,
+      },
+    };
+  } catch (err) {
+    context.res.writeHead(302, { location: "/login" });
+    context.res.end();
+    return { props: [] };
+  }
+}

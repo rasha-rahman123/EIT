@@ -5,10 +5,11 @@ import { AuthContext } from "../context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Loading from "./Loading";
-import firebase from "firebase";
-
+import firebase from "firebase/app";
 import axios from "axios";
 import Footer from "./Footer";
+import { parseCookies } from "nookies";
+import Logo from "./Logo";
 
 
 const sendEmail = async (email,message) => {
@@ -26,13 +27,28 @@ const sendEmail = async (email,message) => {
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 
-export const Layout = ({ children }) => {
-  const { logout, token, uuid } = useContext(AuthContext);
-  const [doc, setDoc] = useState(null);
+export const Layout = ({ children,session }) => {
+
+  const { logout, token } = useContext(AuthContext);
+const [doc, setDoc] = useState(null);
+  const [uuid, setUuid] = useState()
+
+  const router = useRouter();
+  useEffect(async () => {
+    if (router.pathname === '/' || router.pathname === '/login') {
+      return;
+    }
+    const cookies =  parseCookies()
+    const {token} = await cookies
+    const data = await fetch(`/api/getToken?token=${token}`).then(data => data.json(), err => router.push('/login',{query:{prev: router.pathname}}))
+    const {uid} = data;
+    setUuid(uid)
  
+  },[router])
+
   useEffect(() => {
-    token && uuid && loadProfile();
-  }, [uuid, token]);
+    uuid && loadProfile();
+  }, [uuid]);
 
   async function loadProfile() {
     const db = await firebase.firestore();
@@ -44,20 +60,19 @@ export const Layout = ({ children }) => {
     }
   }
   const [profileHover, setProfileHover] = useState(false);
-  const [tokenCheck, setTokenCheck] = useState();
+  const [tokenCheck, setTokenCheck] = useState(true);
 
-  const router = useRouter();
-  useEffect(() => {
+  // useEffect(() => {
 
-    router &&
-      !token &&
-      router.pathname !== "/" &&
-      router.pathname !== "/login" &&
-      router.push("/login");
-    router && !token && router.pathname !== "/" && router.pathname !== "/login"
-      ? setTokenCheck(false)
-      : setTokenCheck(true);
-  }, [token, router]);
+  //   router &&
+  //     !session &&
+  //     router.pathname !== "/" &&
+  //     router.pathname !== "/login" &&
+  //     router.push("/login");
+  //   router && !session && router.pathname !== "/" && router.pathname !== "/login"
+  //     ? setTokenCheck(false)
+  //     : setTokenCheck(true);
+  // }, [session]);
 
 
   return (
@@ -109,11 +124,9 @@ export const Layout = ({ children }) => {
               <Text
                 onClick={() => router.push("/home")}
                 sx={{
-                  textDecoration: "underline",
+                 
                   textAlign: "left",
-                  textDecorationColor: "white",
-                  textUnderlineOffset: 2,
-                  textDecorationThickness: 3,
+
                   alignItems: 'center',
                   display: 'flex',
                   fontWeight: 800,
@@ -126,7 +139,7 @@ export const Layout = ({ children }) => {
                   },
                 }}
               >
-                E I T    <Box sx={{ display: "inline-block" }}>
+              <Logo width={32} animation={false}/> <Text ml={1}> E I T </Text>   <Box sx={{ display: "inline-block" }}>
           <Text
             sx={{
               display: "flex",
@@ -240,5 +253,7 @@ export const Layout = ({ children }) => {
     </Box>
   );
 };
+
+
 
 export default Layout;

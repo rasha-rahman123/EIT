@@ -4,7 +4,7 @@ import Router from "next/router";
 import { useEffect, useState } from "react";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import Loading from "../../components/Loading";
-
+import nookies from 'nookies'
 const args = [
   {
     slug: "repeated-securities",
@@ -272,3 +272,22 @@ export const ExercisePage = ({}) => {
 };
 
 export default ExercisePage;
+
+export async function getServerSideProps(context) {
+  try {
+    const cookies = await nookies.get(context);
+    const token = await fetch(
+      `http://localhost:3000/api/getToken?token=${cookies.token}`
+    ).then((data) => data.json());
+
+    return {
+      props: {
+        session: token,
+      },
+    };
+  } catch (err) {
+    context.res.writeHead(302, { location: "/login" });
+    context.res.end();
+    return { props: [] };
+  }
+}

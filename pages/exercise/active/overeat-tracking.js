@@ -6,7 +6,7 @@ import firebase from "firebase";
 import { AuthContext } from "../../../context/AuthContext";
 import Table from "../../../components/Table";
 import Loading from "../../../components/Loading";
-
+import nookies from 'nookies'
 export const overeat = ({}) => {
   const inputRef = useRef(null);
   const [arr, setArr] = useState([]);
@@ -293,3 +293,22 @@ export const overeat = ({}) => {
 };
 
 export default overeat;
+
+export async function getServerSideProps(context) {
+  try {
+    const cookies = await nookies.get(context);
+    const ten = await fetch(
+      `http://localhost:3000/api/getToken?token=${cookies.token}`
+    )
+    const res = await ten.json();
+    return {
+      props: {
+        session: res,
+      }
+    };
+  } catch (err) {
+    context.res.writeHead(302, { location: "/login" });
+    context.res.end();
+    return { props: [] };
+  }
+}

@@ -4,18 +4,28 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Router from "next/router";
 import firebase from "firebase";
-
-const Profile = () => {
-  const { token, logout, uuid, user } = useContext(AuthContext);
+import nookies, { parseCookies } from 'nookies'
+const Profile = (props) => {
+  const { token, logout, user } = useContext(AuthContext);
   const [doc, setDoc] = useState(null);
+  const [uuid, setUuid] = useState()
+
+  useEffect(async () => {
+    const cookies =  parseCookies()
+    const {token} = await cookies
+    const data = await fetch(`/api/getToken?token=${token}`).then(data => data.json())
+    const {uid} = data;
+    setUuid(uid)
+ 
+  },[])
 
   useEffect(() => {
-    token && uuid && loadProfile();
-  }, [uuid, token]);
+  uuid && loadProfile();
+  }, [uuid]);
 
   async function loadProfile() {
     const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(uuid).get();
+    const doc = await db.collection("Users").doc(props.session.uid).get();
     if (!doc.exists) {
     } else {
       setDoc(doc.data());
@@ -40,7 +50,7 @@ const Profile = () => {
     }
   }
   return (
-    token &&
+
     doc && (
       <Box
         sx={{
@@ -83,7 +93,7 @@ const Profile = () => {
             lineHeight={"100%"}
             color={"brayyy"}
           >
-            Hello, {doc.firstName} {doc.lastName}
+            Hello, {doc && doc.firstName} {doc.lastName}
           </Text>
           <Text fontSize={3} fontWeight={800} color={"brayyy"}>
             You have, {doc.score ? doc.score : 0} points! You can get more by
@@ -144,3 +154,22 @@ const Profile = () => {
 };
 
 export default Profile;
+
+export async function getServerSideProps(context) {
+  try {
+    const cookies = await nookies.get(context);
+    const token = await fetch(
+      `http://localhost:3000/api/getToken?token=${cookies.token}`
+    ).then((data) => data.json());
+
+    return {
+      props: {
+        session: token,
+      },
+    };
+  } catch (err) {
+    context.res.writeHead(302, { location: "/login" });
+    context.res.end();
+    return { props: [] };
+  }
+}

@@ -212,3 +212,15 @@
   from {bottom: 30px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 }
+
+.logo {
+  animation: logo 6s ease-in-out infinite;
+}
+
+@keyframes logo {
+  0% {transform: rotate(0deg);}
+  35% {transform: rotate(360deg);}
+  50% {fill: #000;}
+  65% {transform: rotate(360deg);}
+  100% {transform: rotate(0deg);}
+}

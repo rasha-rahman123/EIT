@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import firebase from 'firebase'
 import Router from "next/router";
-import axios from "axios";
+import nookies from 'nookies'
 
 
 export const AuthContext = createContext()
@@ -12,31 +12,19 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] =  useState(typeof window !== 'undefined' && localStorage.getItem("token"));
     const [uuid, setUuid] = useState(null)
 useEffect(() => {
-    user && firebase.auth().currentUser.getIdToken()
-    .then((idToken) => {
-      // idToken can be passed back to server.
-      localStorage.setItem("token", idToken)
-      setToken(idToken)
-     
-    })
-    .catch((error) => {
-      // Error occurred.
-    });
-
-    if(user != null) {
-        setUuid(user.uid)
-    }
-},[user])
-useEffect(() => {
-    !user && firebase.auth().onAuthStateChanged((user) => {
+    return firebase.auth().onIdTokenChanged(async (user) => {
+      if (!user){
+        setUser(null)
+        nookies.set(undefined, 'token', "",{});
+        return;
+      }
+      const token = await user.getIdToken();
       setUser(user);
-      setLoadingAuthState(false);
-      user && setUuid(user.uid)
-   });
+     
+      nookies.set(undefined,"token", token, {});
 
-   
-  
-}, [user]);
+    })
+},[user])
 
 
 // useEffect(() => {
@@ -49,7 +37,7 @@ useEffect(() => {
 function logout() {
     firebase.auth().signOut();
     setUser(null)
-    localStorage.removeItem('token')
+    nookies.set(undefined, 'token', "",{});
     //set the token back to original state
     setToken(null)
     Router.push("/");

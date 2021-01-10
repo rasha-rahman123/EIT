@@ -6,7 +6,7 @@ import { Transition } from "react-transition-group";
 import Typist from "react-typist";
 import { Box, Button, Text } from "rebass";
 import { Textarea } from "theme-ui";
-
+import nookies from 'nookies';
 export const cogTrainer = ({}) => {
   const [state1, setState1] = useState(false);
   const [state2, setState2] = useState(false);
@@ -292,3 +292,22 @@ export const cogTrainer = ({}) => {
 };
 
 export default cogTrainer;
+
+export async function getServerSideProps(context) {
+  try {
+    const cookies = await nookies.get(context);
+    const token = await fetch(
+      `http://localhost:3000/api/getToken?token=${cookies.token}`
+    ).then((data) => data.json());
+
+    return {
+      props: {
+        session: token,
+      },
+    };
+  } catch (err) {
+    context.res.writeHead(302, { location: "/login" });
+    context.res.end();
+    return { props: [] };
+  }
+}

@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { Box, Button, Text } from "rebass";
 import Router from "next/router";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import { AuthContext } from "../context/AuthContext";
 import Loading from "../components/Loading";
 import { ToastContainer, toast } from "react-toastify";
-import Modal from 'react-modal'
+import Modal from "react-modal";
+import Logo from "../components/Logo";
 const customStyles = {
   content: {
     top: "50%",
@@ -33,7 +34,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [fname, setFName] = useState("");
   const [name, setName] = useState();
-  const [modalOpen, setModalOpen] = useState()
+  const [modalOpen, setModalOpen] = useState();
   const [pass, setPass] = useState("");
   const [passConfirm, setPassConfirm] = useState("");
   const [dob, setDob] = useState(2008);
@@ -51,18 +52,21 @@ const Login = () => {
 
   const weakPass = () => toast("Password not strong enough");
   const handlePassReset = async () => {
-    if(email.length === 0){
-      return alert('Please enter email first')
+    if (email.length === 0) {
+      return alert("Please enter email first");
     }
     var auth = firebase.auth();
-var emailAddress = email;
-auth.sendPasswordResetEmail(emailAddress).then(function() {
-  // Email sent.
-}).catch(function(error) {
-  // An error happened.
-});
-setModalOpen(false)
-  }
+    var emailAddress = email;
+    auth
+      .sendPasswordResetEmail(emailAddress)
+      .then(function () {
+        // Email sent.
+      })
+      .catch(function (error) {
+        // An error happened.
+      });
+    setModalOpen(false);
+  };
 
   const handleSignUp = async (event) => {
     event.preventDefault();
@@ -71,37 +75,50 @@ setModalOpen(false)
       return weakPass();
     }
     if (pass !== passConfirm) {
+      event.preventDefault();
       return alert("Passwords must match");
     }
+
     await setLoading(true);
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, pass)
-      .then((userCredential) => {
-        authContext.setUser(userCredential);
-        const db = firebase.firestore();
-        db.collection("Users")
-          .doc(userCredential.user.uid)
-          .set({
-            email: email,
-            displayName:
-              name + fname + "#" + userCredential.user.uid.substr(0, 6),
-            dob: dob,
-            firstName: name,
-            lastName: fname
-          })
-          .then(() => {
-            setLoading(false);
-            var user = firebase.auth().currentUser;
+      .then(
+        (userCredential) => {
+          authContext.setUser(userCredential);
+          const db = firebase.firestore();
+          db.collection("Users")
+            .doc(userCredential.user.uid)
+            .set({
+              email: email,
+              displayName:
+                name + fname + "#" + userCredential.user.uid.substr(0, 6),
+              dob: dob,
+              firstName: name,
+              lastName: fname,
+            })
+            .then(
+              () => {
+                setLoading(false);
+                var user = firebase.auth().currentUser;
 
-            Router.push({ pathname: "/home" });
-          })
-          .catch((error) => {
-            console.log(error.message);
-            setLoading(false);
-            alert(error.message);
-          });
-      });
+                Router.push({ pathname: "/home" });
+              },
+              (err) => {
+                setLoading(false);
+              }
+            )
+            .catch((error) => {
+              console.log(error.message);
+              setLoading(false);
+              alert(error.message);
+            });
+        },
+        (err) => {
+          setLoading(false);
+          alert("Email already in use");
+        }
+      );
   };
   return (
     <Box
@@ -112,9 +129,9 @@ setModalOpen(false)
         right: 0,
 
         bg: "rgba(255, 255, 255,0.2)",
-        pt: [2,4],
+        pt: [2, 4],
         pb: 6,
-        color: '#2c2c2e'
+        color: "#2c2c2e",
       }}
     >
       <Box
@@ -122,7 +139,23 @@ setModalOpen(false)
         onSubmit={(e) => (register ? handleSignUp(e) : handleSubmit(e))}
         sx={{ p: 3, px: 4 }}
       >
-        <Text fontSize={3} fontWeight={800} sx={{pl: '10%'}}>{register ? "JOIN EIT" : "WELCOME BACK TO EIT"}</Text>
+        <Text fontSize={3} fontWeight={800} sx={{ pl: "10%", display: 'flex', flexDirection: 'row' }}>
+        <Logo width={24} animation={false} />
+          {register ? (
+            <Text ml={2}>
+            JOIN EIT
+           
+          </Text>
+          
+          ) : (
+            <Text ml={2}>
+              WELCOME BACK
+             
+            </Text>
+            
+          )}
+         
+        </Text>
         {register && (
           <>
             <Box my={3} display={"flex"} sx={{ flexDirection: "column" }}>
@@ -134,6 +167,7 @@ setModalOpen(false)
               </Text>
               <Box
                 as="input"
+                pattern="[a-zA-Z]+"
                 sx={{
                   background: "none",
                   border: "none",
@@ -141,12 +175,11 @@ setModalOpen(false)
                   width: "80%",
                   fontSize: 24,
                   alignSelf: "center",
-                  color: '#2c2c2e'
+                  color: "#2c2c2e",
                 }}
                 value={name}
                 required
                 type="text"
-                
                 onChange={(e) => setName(e.target.value)}
               />
             </Box>
@@ -159,6 +192,7 @@ setModalOpen(false)
               </Text>
               <Box
                 as="input"
+                pattern="[a-zA-Z]+"
                 sx={{
                   background: "none",
                   border: "none",
@@ -166,17 +200,19 @@ setModalOpen(false)
                   width: "80%",
                   fontSize: 24,
                   alignSelf: "center",
-                  color: '#2c2c2e'
+                  color: "#2c2c2e",
                 }}
                 value={fname}
                 required
                 type="text"
-                
                 onChange={(e) => setFName(e.target.value)}
               />
             </Box>
             <Box my={3} display={"flex"} sx={{ flexDirection: "column" }}>
-              <Text fontSize={18} sx={{ fontWeight: 800, opacity: 0.6, pl: '10%' }}>
+              <Text
+                fontSize={18}
+                sx={{ fontWeight: 800, opacity: 0.6, pl: "10%" }}
+              >
                 YEAR OF BIRTH*
               </Text>
               <Box
@@ -186,9 +222,9 @@ setModalOpen(false)
                   background: "none",
                   border: "none",
                   width: "80%",
-                  alignSelf: 'center',
+                  alignSelf: "center",
                   fontSize: 24,
-                  color: '#2c2c2e',
+                  color: "#2c2c2e",
                   textDecoration: "underline",
                   textUnderlineOffset: 3,
                   textDecorationThickness: 3,
@@ -206,56 +242,58 @@ setModalOpen(false)
             </Box>
           </>
         )}
-    <Box my={3} mt={4} display={"flex"} sx={{ flexDirection: "column" }}>
-          <Text fontSize={18} sx={{ fontWeight: 800, opacity: 0.6, pl: '10%' }}>
-            EMAIL ADDRESS{register && '*'}
+        <Box my={3} mt={4} display={"flex"} sx={{ flexDirection: "column" }}>
+          <Text fontSize={18} sx={{ fontWeight: 800, opacity: 0.6, pl: "10%" }}>
+            EMAIL ADDRESS{register && "*"}
           </Text>
           <Box
             as="input"
             sx={{
-              ":focus":{background: 'none', outline: 'none'},
+              ":focus": { background: "none", outline: "none" },
               background: "transparent",
               border: "none",
               borderBottom: "1px solid #2c2c2e",
               width: "80%",
               fontSize: 24,
-              color: '#2c2c2e',
-              alignSelf: 'center'
+              color: "#2c2c2e",
+              alignSelf: "center",
             }}
             value={email}
             type="email"
             required
-           
             onChange={(e) => setEmail(e.target.value)}
           />
         </Box>
-
         <Box display={"flex"} sx={{ flexDirection: "column" }}>
-          <Text fontSize={18} sx={{ fontWeight: 800, opacity: 0.6, pl: '10%' }}>
-            PASSWORD{register && '*'}
+          <Text fontSize={18} sx={{ fontWeight: 800, opacity: 0.6, pl: "10%" }}>
+            PASSWORD{register && "*"}
           </Text>
           <Box
             as="input"
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+            title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
             sx={{
               background: "none",
               border: "none",
               borderBottom: "1px solid #2c2c2e",
               width: "80%",
               fontSize: 24,
-              color: '#2c2c2e',
-              alignSelf: 'center'
+              color: "#2c2c2e",
+              alignSelf: "center",
             }}
             required
             value={pass}
             type="password"
-            
             onChange={(e) => setPass(e.target.value)}
           />
           {register && (
             <>
               {" "}
-              <Text fontSize={18} sx={{ fontWeight: 800, opacity: 0.6, pl: '10%' }}>
-           CONFIRM PASSWORD*
+              <Text
+                fontSize={18}
+                sx={{ fontWeight: 800, opacity: 0.6, pl: "10%" }}
+              >
+                CONFIRM PASSWORD*
               </Text>
               <Box
                 as="input"
@@ -265,23 +303,23 @@ setModalOpen(false)
                   borderBottom: "1px solid #2c2c2e",
                   width: "80%",
                   fontSize: 24,
-                  color: '#2c2c2e',
-                  alignSelf: 'center'
+                  color: "#2c2c2e",
+                  alignSelf: "center",
                 }}
                 required
                 value={passConfirm}
                 type="password"
-                
                 onChange={(e) => setPassConfirm(e.target.value)}
               />
             </>
           )}
         </Box>
         {!register && (
-          <Text onClick={() => setModalOpen(true)}
+          <Text
+            onClick={() => setModalOpen(true)}
             sx={{
               color: "#3AACFF",
-              pl: '10%',
+              pl: "10%",
               pt: 1,
               ":hover": { textDecoration: "underline", cursor: "pointer" },
             }}
@@ -289,12 +327,30 @@ setModalOpen(false)
             Forgot password?
           </Text>
         )}
-    <Modal
-              isOpen={modalOpen}
-              onRequestClose={() => setModalOpen(false)}
-              style={customStyles}
-              contentLabel="Congrats!"
-            ><form style={{display: 'flex', flexDirection: 'column'}} onClick={() => handlePassReset()}><label>ENTER EMAIL </label><input style={{marginBottom: 3}} value={email} onChange={e => setEmail(e.target.value)} /><Button onClick={()=> handlePassReset()} sx={{bg: 'brayyy', maxHeight: 40, margin: 'auto 0'}}>SEND RESET PASS EMAIL</Button></form></Modal>{" "}
+        <Modal
+          isOpen={modalOpen}
+          onRequestClose={() => setModalOpen(false)}
+          style={customStyles}
+          contentLabel="Congrats!"
+        >
+          <form
+            style={{ display: "flex", flexDirection: "column" }}
+            onClick={() => handlePassReset()}
+          >
+            <label>ENTER EMAIL </label>
+            <input
+              style={{ marginBottom: 3 }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Button
+              onClick={() => handlePassReset()}
+              sx={{ bg: "brayyy", maxHeight: 40, margin: "auto 0" }}
+            >
+              SEND RESET PASS EMAIL
+            </Button>
+          </form>
+        </Modal>{" "}
         <Box
           sx={{
             width: "100%",
@@ -311,7 +367,7 @@ setModalOpen(false)
           ) : (
             <Button
               sx={{
-                width: '80%',
+                width: "80%",
                 height: 50,
                 borderRadius: 30,
                 background: "#2c2c2e",
@@ -323,7 +379,14 @@ setModalOpen(false)
               Enter
             </Button>
           )}
-          <Text onClick={() => setRegister(!register)} sx={{cursor: 'pointer', ":hover":{textDecoration: 'underline'} }} mt={2}>
+          <Text
+            onClick={() => setRegister(!register)}
+            sx={{
+              cursor: "pointer",
+              ":hover": { textDecoration: "underline" },
+            }}
+            mt={2}
+          >
             {register
               ? "Already signed up? Click here to login"
               : "No account? Click here to sign up"}
