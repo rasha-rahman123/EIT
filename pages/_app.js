@@ -36,9 +36,9 @@ function MyApp({ Component, pageProps }) {
         <DefaultSeo
           title="EIT: Self Care Reformed"
           description="Emotional Intelligence Trainer (EIT) is a revolutionary look at self care. Rather than have people meditate all day long, EIT looks at CBT practical methodology though mental brain exercises that actually work."
-          canonical="https://www.canonical.ie/"
+          canonical="https://eitrainer.app/"
           openGraph={{
-            url: "https://www.url.ie/a",
+            url: "https://eitrainer.app/",
             title: "EIT: Self Care Reformed",
             description:
               "Emotional Intelligence Trainer (EIT) is a revolutionary look at self care. Rather than have people meditate all day long, EIT looks at CBT practical methodology though mental brain exercises that actually work.",
