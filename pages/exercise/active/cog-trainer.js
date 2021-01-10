@@ -5,6 +5,7 @@ import { MdToys } from "react-icons/md";
 import { Transition } from "react-transition-group";
 import Typist from "react-typist";
 import { Box, Button, Text } from "rebass";
+import { Textarea } from "theme-ui";
 
 export const cogTrainer = ({}) => {
   const [state1, setState1] = useState(false);
@@ -188,12 +189,12 @@ export const cogTrainer = ({}) => {
                 }}
               >
                 <>
-                  <Box
+                  <Textarea
                     onSubmit={(e) => {
                       e.preventDefault();
                       fetchData();
                     }}
-                    as="textarea"
+                   
                     value={inputVa}
                     onChange={(e) => setInputVa(e.target.value)}
                     placeholder="Paste a message here"

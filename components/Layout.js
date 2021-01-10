@@ -40,7 +40,7 @@ export const Layout = ({ children }) => {
     if (!doc.exists) {
     } else {
       setDoc(doc.data());
-      console.log(doc.data());
+     
     }
   }
   const [profileHover, setProfileHover] = useState(false);
@@ -48,7 +48,7 @@ export const Layout = ({ children }) => {
 
   const router = useRouter();
   useEffect(() => {
-    console.log(router.isFallback);
+
     router &&
       !token &&
       router.pathname !== "/" &&
@@ -59,7 +59,6 @@ export const Layout = ({ children }) => {
       : setTokenCheck(true);
   }, [token, router]);
 
-  const [score, setScore] = useState();
 
   return (
     <Box
@@ -115,6 +114,8 @@ export const Layout = ({ children }) => {
                   textDecorationColor: "white",
                   textUnderlineOffset: 2,
                   textDecorationThickness: 3,
+                  alignItems: 'center',
+                  display: 'flex',
                   fontWeight: 800,
                   transition: "all 300ms ease",
                   fontSize: 5,
@@ -125,7 +126,26 @@ export const Layout = ({ children }) => {
                   },
                 }}
               >
-                E I T
+                E I T    <Box sx={{ display: "inline-block" }}>
+          <Text
+            sx={{
+              display: "flex",
+              fontSize: 1,
+              bg: "red",
+              mx: 1,
+              transform: 'scale(0.9) translateY(-1vh)',
+              height: 20,
+              textAlign: "center",
+              justifyContent: 'center',
+              alignItems: 'center',
+              px: 1,
+              borderRadius: 6,
+              color: 'white'
+            }}
+          >
+            BETA
+          </Text>
+        </Box>
               </Text>
             </Box>
             <Box>

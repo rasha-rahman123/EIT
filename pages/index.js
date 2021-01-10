@@ -33,10 +33,33 @@ export default function Home() {
   const { token } = useContext(AuthContext);
   const [queries, setQueries] = useState();
   const [modalOpen, setModalOpen] = useState();
+  const [pwa, setPwa] = useState(false);
+  const [isApple, setIsApple] = useState();
+  const [isMobile, setIsMobile] = useState();
   useEffect(async () => {
     Router && (await setQueries(Router.query));
     Router && queries && queries.signup === "success" && setModalOpen(true);
   }, [Router, queries]);
+  useEffect(() => {
+    const close = setTimeout(() => {
+      setIsApple(false);
+      setIsMobile(false);
+    }, 7000);
+    isApple && close;
+  }, [isApple]);
+  useEffect(() => {
+    navigator.getInstalledRelatedApps().then((data) => console.log(data));
+    if (
+      /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    ) {
+      setIsMobile(true);
+    } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      setIsMobile(true);
+      setIsApple(true);
+    } else {
+      return;
+    }
+  }, []);
 
   return (
     <Box
@@ -54,6 +77,17 @@ export default function Home() {
         p: 4,
       }}
     >
+      <Box
+        sx={{
+          position: "absolute",
+          top: 4,
+          right: 4,
+          fontSize: 1,
+          color: "brayyy",
+        }}
+      >
+        VERSION 0.0.1
+      </Box>
       {/* <Box
         sx={{
           height: 64,
@@ -70,8 +104,8 @@ export default function Home() {
           fontWeight: 800,
           fontSize: 48,
           lineHeight: "80%",
-          color: "#2C2C2E",
-
+          color: ['#2B85D7','brayyy'],
+          
           position: "relative",
           zIndex: 2,
         }}
@@ -79,73 +113,215 @@ export default function Home() {
         Emotional
         <br />
         Intelligence <br />
-        Trainer
+        Trainer{" "}
+        <Box sx={{ display: "inline-block" }}>
+          <Text
+            sx={{
+              display: "flex",
+              fontSize: 1,
+              bg: "red",
+              height: 20,
+              textAlign: "center",
+              justifyContent: "center",
+              alignItems: "center",
+              px: 1,
+              borderRadius: 6,
+              color: "white",
+            }}
+          >
+            BETA
+          </Text>
+        </Box>
       </Text>
-      {/* <Image
-        src="/screenie.png"
-        style={{ position: "absolute", left: 30, top: 160, width: '40%', opacity: 0.4}}
-      /> */}
       <Box
-        width={320}
-        height={563}
-        sx={{ position: "absolute", right: 0, bottom: 0 }}
-      >
-        <Image
-          src="/ToyFaces_Tansparent_BG_29.png"
-          // sx={{ position: "absolute", right: 0, bottom: 0 }}
-          layout="fill"
-        />
-      </Box>
-
-      {/* <Box
         sx={{
-          background: "linear-gradient(0deg, #EDD0AB 35%, #3AACFF00)",
           position: "absolute",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          height: "40%",
+          left: 4,
+          bottom: 4,
+          boxShadow: 'large'
         }}
-      /> */}
-      <Modal
-        isOpen={modalOpen}
-        onRequestClose={() => setModalOpen(false)}
-        style={customStyles}
-        contentLabel="Congrats!"
       >
         {" "}
-        <Typist>
-          <Text>Account has been made.</Text>{" "}
-          <Text>
-            Please verify now using email, afterwards, you will be able to
-            login!!
-          </Text>{" "}
-        </Typist>
-      </Modal>
-      <Box
-        sx={{
-          width: "100%",
-          height: 100,
-          position: "relative",
-          bottom: -350,
-          display: "flex",
-          justifyContent: "center",
-          zIndex: 10,
-        }}
-      >
-        <Button
-          sx={{
-            width: 314,
-            height: 70,
-            borderRadius: 30,
-            bg: "brayyy",
-            color: "whitesmoke",
-          }}
-          onClick={() => (token ? Router.push("/home") : Router.push("/login"))}
-        >
-          Get Started
-        </Button>
+        <Image src="/screenie.png" layout="intrinsic" width={500} height={300} />
       </Box>
+
+      {pwa ? (
+        <>
+          <Text sx={{ mt: 3 }}>
+            Welcome to the next best thing for your brain.
+          </Text>
+          <Text>
+            We are currently running as a Progressive Web App which means
+            installing our application is super quick and easy.
+          </Text>
+          <Box
+            sx={{
+              position: "fixed",
+              width: "100vw",
+              bottom: 0,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              left: 0,
+            }}
+          >
+            <Box
+              onClick={() => setIsApple(false)}
+              sx={{
+                width: 200,
+                p: 3,
+                borderRadius: 10,
+                bg: "brayyy",
+                opacity: 0.5,
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              Apple Users, Click 'Add to Home Screen' to Install
+            </Box>
+            <Box
+              sx={{
+                width: 40,
+                height: 10,
+                bg: "brayyy",
+                alignSef: "center",
+                borderRadius: "0% 0% 50% 50%",
+              }}
+            ></Box>
+          </Box>
+        </>
+      ) : (
+        <>
+          {" "}
+          <Box
+            sx={{
+              position: "fixed",
+              width: "100vw",
+              bottom: 0,
+
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              left: 0,
+              zIndex: 15,
+              display: isApple ? "flex" : "none",
+            }}
+          >
+            <Box
+              sx={{
+                width: 200,
+                p: 3,
+                borderRadius: 10,
+                bg: "brayyy",
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              Apple Users, Add To Home Screen Here To Install
+            </Box>
+            <Box
+              sx={{
+                width: 40,
+                height: 10,
+                bg: "brayyy",
+                alignSef: "center",
+                borderRadius: "0% 0% 50% 50%",
+              }}
+            ></Box>
+          </Box>
+          <Box
+            sx={{
+              position: "fixed",
+              width: "100vw",
+              top: 0,
+
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              right: 0,
+              zIndex: 15,
+              display: isMobile && !isApple ? "flex" : "none",
+            }}
+          >
+            <Box
+              sx={{
+                width: 40,
+                height: 10,
+                bg: "brayyy",
+                alignSelf: "flex-end",
+                mr: 4,
+                borderRadius: "50% 50% 0% 0%",
+              }}
+            ></Box>
+            <Box
+              sx={{
+                width: 200,
+                p: 3,
+                borderRadius: 10,
+                bg: "brayyy",
+                color: "white",
+                alignSelf: "flex-end",
+                textAlign: "center",
+              }}
+            >
+              Android Users, Add To Home Screen Here To Install
+            </Box>
+          </Box>
+          <Box
+            width={320}
+            height={563}
+            sx={{ position: "absolute", right: 0, bottom: 0 }}
+          >
+            <Image
+              src="/ToyFaces_Tansparent_BG_29.png"
+              // sx={{ position: "absolute", right: 0, bottom: 0 }}
+              layout="fill"
+            />
+          </Box>
+          <Modal
+            isOpen={modalOpen}
+            onRequestClose={() => setModalOpen(false)}
+            style={customStyles}
+            contentLabel="Congrats!"
+          >
+            {" "}
+            <Typist>
+              <Text>Account has been made.</Text>{" "}
+              <Text>
+                Please verify now using email, afterwards, you will be able to
+                login!!
+              </Text>{" "}
+            </Typist>
+          </Modal>
+          <Box
+            sx={{
+              width: "100%",
+              height: 100,
+              position: "relative",
+              bottom: -30,
+              display: "flex",
+              justifyContent: "center",
+              zIndex: 10,
+            }}
+          >
+            <Button
+              sx={{
+                width: 314,
+                height: 70,
+                borderRadius: 30,
+                bg: "brayyy",
+                color: "whitesmoke",
+              }}
+              onClick={() =>
+                token ? Router.push("/home") : Router.push("/login")
+              }
+            >
+              Get Started
+            </Button>
+          </Box>
+        </>
+      )}
     </Box>
   );
 }

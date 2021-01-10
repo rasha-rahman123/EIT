@@ -112,11 +112,14 @@ const Home = (props) => {
   const [queries, setQueries] = useState();
   const [score, setScore] = useState();
   const [modalOpen, setModalOpen] = useState(false);
-  
-  const { data } = useSWR(
-    "/api/getMediumArticle",
-    fetch("/api/getMediumArticle").then((r) => r.json())
-  );
+  const [data, setData] = useState();
+
+  useEffect(async () => {
+    var data = await fetch("/api/getMediumArticle").then((r) => r.json());
+    await setData(data);
+    setPosts(data)
+    setP(data)
+  }, []);
   useEffect(async () => {
     Router && (await setQueries(Router.query));
     Router &&
@@ -129,30 +132,22 @@ const Home = (props) => {
   }, [user]);
   const [doc, setDoc] = useState(null);
 
-  const posts = data;
-
   const [postser, setPosts] = useState();
-
-  useEffect(() => {
-    posts && memo(setPosts(posts), [postser]);
-  }, [posts, props]);
+  const [posts, setP] = useState();
 
   useEffect(() => {
     token && uuid && loadProfile();
   }, [uuid, token]);
 
-  async function loadProfile() {
+   async function loadProfile() {
     const db = await firebase.firestore();
     const doc = await db.collection("Users").doc(uuid).get();
     if (!doc.exists) {
     } else {
       setDoc(doc.data());
-      console.log(doc.data());
+      
     }
   }
-  useEffect(() => {
-    posts && console.log(posts["rss"].channel.item);
-  }, [posts]);
 
   useEffect(() => {
     uuid &&
@@ -180,7 +175,7 @@ const Home = (props) => {
         display: "flex",
         width: "100%",
         flexDirection: "column",
-        
+
         p: 4,
       }}
     >
@@ -193,24 +188,7 @@ const Home = (props) => {
           <Loading width={300} height={28} />
         )}
       </Text>
-      <Box
-        as="input"
-        mb={4}
-        placeholder={"Search"}
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        width={"100%"}
-        fontSize={14}
-        sx={{
-          bg: "none",
-          border: "none",
-          background: "rgba(0, 0, 0,0.05)",
-          p: 3,
-          px: 3,
-          borderRadius: 10,
-          boxShadow: "inset 0px 0px 3px #00000030",
-        }}
-      ></Box>
+      
       <Text
         sx={{
           fontSize: 24,
@@ -229,6 +207,25 @@ const Home = (props) => {
         <Text opacity={0.6} display="inline-block">
           {" (" + taskCards.length})
         </Text>
+        <Box
+        as="input"
+
+        placeholder={"Search"}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        width={[200]}
+        fontSize={14}
+        sx={{
+          bg: "none",
+          border: "none",
+          background: "rgba(0, 0, 0,0.05)",
+          p: 2,
+          px: 3,
+          borderRadius: 5,
+          boxShadow: "inset 0px 0px 3px #00000030",
+          display: 'block'
+        }}
+      ></Box>
       </Text>
       <Box
         display="flex"
@@ -249,7 +246,8 @@ const Home = (props) => {
             maxHeight: 20,
             borderRadius: 30,
           },
-          my: 4,
+          mb: 1,
+          mt: 2,
         }}
       >
         <Modal
@@ -367,7 +365,7 @@ const Home = (props) => {
           },
         }}
       >
-        <a href="https://storyset.com/work">Illustration by Freepik Storyset</a>
+      
         {!modalOpen &&
           postser &&
           postser["rss"] &&
@@ -378,12 +376,13 @@ const Home = (props) => {
                   cardInfo={{
                     name: x.title._text,
                     desc: x.description._cdata.substr(0, 40) + "...",
-                    color: posts["rss"].channel.item.indexOf(x),
+                    color: postser["rss"].channel.item.indexOf(x),
                   }}
                 />
               </a>
             </Link>
           ))}
+            <a href="https://storyset.com/work">Illustration by Freepik Storyset</a>
       </Box>
     </Box>
   );

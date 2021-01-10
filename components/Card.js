@@ -34,14 +34,14 @@ export default function Card({ cardInfo }) {
           alignItems: "center",
           fontSize: 64,
           filter: 'saturate(100%) brightness(100%)',
-          transform: hover ? 'rotate(180deg)' : 'rotate(0deg)',
+          transform: hover ? 'rotate(180deg)' : 'rotate(90deg)',
           border: '10px solid #2c2c2e',
           transition: 'all 600ms ease-in-out',
           boxShadow:'0px 0px 3px #00000040,0px 0px 10px #00000005',
           
         }}
       >
-       <Text sx={{color: cardInfo.color,mixBlendMode: 'overlay', transform: hover ? 'rotate(-180deg) scale(1.05) translateY(-4px)' : 'rotate(0deg)',
+       <Text sx={{color: cardInfo.color,mixBlendMode: 'overlay', transform: hover ? 'rotate(-180deg) scale(1.05) translateY(-4px)' : 'rotate(-90deg)',
           transition: 'all 600ms ease-in-out', filter: 'saturate(100%) hue-rotate(-10deg) brightness(50%)'}}>{cardInfo.icon}</Text>
       </Box>
 
