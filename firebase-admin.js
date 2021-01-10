@@ -18,3 +18,4 @@ export const verifyIdToken = (token) => {
   })
 }
 
+export default admin;
