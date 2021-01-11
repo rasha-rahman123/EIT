@@ -105,7 +105,6 @@ const helpRec = [
 ];
 const Home = ({session, token}) => {
   const { user, logout } = useContext(AuthContext);
-  
   const [userEmail, setUserEmail] = useState(null);
   const [search, setSearch] = useState("");
   const [profileHover, setProfileHover] = useState();
