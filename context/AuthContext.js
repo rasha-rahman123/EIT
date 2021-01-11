@@ -51,7 +51,7 @@ function login(email, pass) {
     .then(res => {
       setUser(res);
       setLoadingAuthState(false);
-      Router.push("/home");
+      window.location.assign('/home')
    })
     .catch(error => {
     console.log(error.message);
