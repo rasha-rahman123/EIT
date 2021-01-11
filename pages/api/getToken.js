@@ -6,7 +6,6 @@ export default async (_, res) => {
     const token = await _.query.token;
 
     const tok = await verifyIdToken(token);
-    
     return res.send(tok);
   } catch (err) {
     return res.send(err);
