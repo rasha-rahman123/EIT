@@ -1,7 +1,4 @@
-
-
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import prisma from '../../config/prisma'
 
 const findProfile = async (nn,res) => {
   const posts = await prisma.user.findUnique({
