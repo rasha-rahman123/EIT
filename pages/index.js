@@ -8,7 +8,7 @@ import { AuthContext } from "../context/AuthContext";
 import Modal from "react-modal";
 import Typist from "react-typist";
 import Logo from "../components/Logo";
-
+import {useSession} from "next-auth/client"
 const customStyles = {
   content: {
     top: "50%",
@@ -48,7 +48,7 @@ export default function Home() {
     }, 7000);
     isApple && close;
   }, [isApple]);
-
+  const [session] = useSession()
   const logo = useMemo(() => <Logo width={48} animation={true} />,[ ])
 
   useEffect(() => {
@@ -323,7 +323,7 @@ export default function Home() {
                 color: "whitesmoke",
               }}
               onClick={() =>
-                token ? Router.push("/home") : Router.push("/login")
+                session ? Router.push('home') : Router.push("/login")
               }
             >
               Get Started
