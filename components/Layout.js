@@ -167,13 +167,18 @@ const [doc, setDoc] = useState(null);
             <Box
               sx={{
                 visibility: profileHover ? "visible" : "hidden",
-                width: "100%",
+    
                 height: profileHover ? "auto" : 0,
                 fontSize: 3,
                 transform: profileHover ? "" : "translateY(-5vh)",
                 transition: "all 300ms ease",
                 opacity: profileHover ? 1 : 0,
                 textAlign: "right",
+                position: 'absolute',
+                top: 80,
+                p: 2,
+                right: 50  ,
+                bg: profileHover ? 'white' : 'transparent'
               }}
             >
               <Text onClick={() => setProfileHover(false)}>
