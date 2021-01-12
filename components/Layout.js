@@ -10,7 +10,7 @@ import axios from "axios";
 import Footer from "./Footer";
 import { parseCookies } from "nookies";
 import Logo from "./Logo";
-
+import {signOut, useSession} from 'next-auth/client'
 
 const sendEmail = async (email,message) => {
   await axios('/api/messageMe', {
@@ -27,47 +27,38 @@ const sendEmail = async (email,message) => {
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 
-export const Layout = ({ children,session,token }) => {
+export const Layout = ({ children }) => {
 
   const logo = useMemo(() => <Logo width={32} animation={false} />)
-
+  const [session] = useSession();
   const { logout } = useContext(AuthContext);
 const [doc, setDoc] = useState(null);
   const [uuid, setUuid] = useState()
 
   const router = useRouter();
 
-  useEffect(() => {
-    token && loadProfile();
-  }, [token]);
+  const [score,setScore] = useState();
 
-  async function loadProfile() {
-    const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(token.uid).get();
-    if (!doc.exists) {
-    } else {
-      setDoc(doc.data());
-     
-    }
-  }
+  
+  useEffect(() => {
+    async function getScore() {
+      await axios('/api/getScore',{
+        params: {name: session && session.user && session.user.email}
+       }).then(data => setScore(data.data))
+   
+     }
+
+     session && getScore()
+  },[session])
+
+
   const [profileHover, setProfileHover] = useState(false);
   const [tokenCheck, setTokenCheck] = useState(true);
 
-  // useEffect(() => {
-
-  //   router &&
-  //     !session &&
-  //     router.pathname !== "/" &&
-  //     router.pathname !== "/login" &&
-  //     router.push("/login");
-  //   router && !session && router.pathname !== "/" && router.pathname !== "/login"
-  //     ? setTokenCheck(false)
-  //     : setTokenCheck(true);
-  // }, [session]);
 
 
   return (
-    <Box
+   <Box
       sx={{
         minHeight: "100vh",
         position: "fixed",
@@ -111,9 +102,9 @@ const [doc, setDoc] = useState(null);
             }}
             fontSize={3}
           >
-            <Box>
+            <Box >
               <Text
-                onClick={() => router.push("/home")}
+                onClick={() => session ? router.push("/home") : router.push('/')}
                 sx={{
                  
                   textAlign: "left",
@@ -152,7 +143,7 @@ const [doc, setDoc] = useState(null);
         </Box>
               </Text>
             </Box>
-            <Box>
+            {session ? <Box>
               <CgProfile
                 style={{
                   cursor: "pointer",
@@ -168,7 +159,7 @@ const [doc, setDoc] = useState(null);
                 }}
                 onClick={() => setProfileHover(!profileHover)}
               />
-            </Box>
+            </Box> : <Text onClick={() => router.push('/login')} sx={{cursor: 'pointer'}}>Sign In</Text>}
             <Box></Box>
             <Box
               sx={{
@@ -185,21 +176,19 @@ const [doc, setDoc] = useState(null);
               <Text onClick={() => setProfileHover(false)}>
                 <Link href="/profile">
                   <a>
-                    {doc && doc.firstName
-                      ? doc.firstName + "'s Account"
-                      : doc && doc.displayName && doc.displayName}
+                  {session && session.user && session.user.name + "'s Account"}
                   </a>
                 </Link>
               </Text>
               <Text onClick={() => setProfileHover(false)}>
                 <Link href="/profile">
-                  <a>Score: {doc && doc.score ? doc.score : 0}</a>
+                  <a>Score: {score ? score : 0}</a>
                 </Link>
               </Text>
               <Text
                 onClick={() => setProfileHover(false)}
                 sx={{ cursor: "pointer" }}
-                onClick={() => logout()}
+                onClick={() => signOut()}
               >
                 Sign Out
               </Text>

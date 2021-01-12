@@ -6,13 +6,13 @@ import { Transition } from "react-transition-group";
 import Typist from "react-typist";
 import { Box, Button, Text } from "rebass";
 import { Textarea } from "theme-ui";
-import nookies from 'nookies';
+import {useSession} from 'next-auth/client'
 export const cogTrainer = ({}) => {
   const [state1, setState1] = useState(false);
   const [state2, setState2] = useState(false);
   const [inputVa, setInputVa] = useState("");
   const [data, setData] = useState();
-
+  const [session] = useSession()
   const maps = [
     {
       title: "Emotional Reasoning",
@@ -104,7 +104,7 @@ export const cogTrainer = ({}) => {
   };
 
   return (
-    <Box
+    session ? <Box
       color="#3AACFF"
       sx={{
         position: "absolute",
@@ -287,7 +287,7 @@ export const cogTrainer = ({}) => {
                 .map((x) => x.desc)}
             </Box>
           )}
-    </Box>
+    </Box> : <> </>
   );
 };
 

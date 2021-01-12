@@ -3,35 +3,31 @@ import { Box, Text } from "rebass";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import Router from "next/router";
-import firebase from "firebase";
-import { parseCookies } from 'nookies'
-const Profile = (props) => {
-  const { token, logout, user } = useContext(AuthContext);
-  const [doc, setDoc] = useState(null);
-  const [uuid, setUuid] = useState()
+import {useSession, signOut} from 'next-auth/client'
+import axios from "axios";
+import Loading from "../components/Loading";
 
-  useEffect(async () => {
-    const cookies =  parseCookies()
-    const {token} = await cookies
-    const data = await fetch(`/api/getToken?token=${token}`).then(data => data.json())
-    const {uid} = data;
-    setUuid(uid)
+
+const Profile = (props) => {
+  const [session] = useSession();
+  const [score,setScore] = useState();
+ function addScore() {
+   axios('/api/addScore',{
+      params: {name: session.user.email}
+     })
  
-  },[])
+   }
 
   useEffect(() => {
-  uuid && loadProfile();
-  }, [uuid]);
+    async function getScore() {
+      await axios('/api/getScore',{
+        params: {name: session.user.email}
+       }).then(data => setScore(data.data))
+   
+     }
 
-  async function loadProfile() {
-    const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(props.token.uid).get();
-    if (!doc.exists) {
-    } else {
-      setDoc(doc.data());
-      console.log(doc.data());
-    }
-  }
+     session && getScore()
+  },[session])
 
   async function deleteProfile() {
     if (window.confirm("Do you really want to delete your account?")) {
@@ -49,9 +45,7 @@ const Profile = (props) => {
         });
     }
   }
-  return (
-
-    doc && (
+  return ( session ?
       <Box
         sx={{
           position: "absolute",
@@ -81,7 +75,7 @@ const Profile = (props) => {
             <Box
               fontSize={16}
               sx={{ cursor: "pointer" }}
-              onClick={() => logout()}
+              onClick={() => signOut()}
             >
               Sign Out
             </Box>
@@ -93,11 +87,10 @@ const Profile = (props) => {
             lineHeight={"100%"}
             color={"brayyy"}
           >
-            Hello, {doc && doc.firstName} {doc.lastName}
+            Hello, {session && session.user.name}
           </Text>
           <Text fontSize={3} fontWeight={800} color={"brayyy"}>
-            You have, {doc.score ? doc.score : 0} points! You can get more by
-            doing{" "}
+            {`You have, ${score} points! You can get more by doing `}
             <Text
               as="a"
               href="/home"
@@ -110,11 +103,8 @@ const Profile = (props) => {
               <a>exercises</a>
             </Text>
           </Text>
-          <Text fontSize={3} fontWeight={800} color={"brayyy"}>
-            Your username is @{doc.displayName}
-          </Text>
           <Text fontSize={2} fontWeight={800} color={"brayyy"}>
-            Your current email is {doc.email}
+            Your current email is {session.user.email}
           </Text>
           <Text fontSize={1} fontWeight={800} color={"brayyy"}>
             Want to terminate account?{" "}
@@ -148,9 +138,8 @@ const Profile = (props) => {
             . Please reach out to him for any questions.
           </Text>
         </Box>
-      </Box>
+      </Box> : <Loading width={'100vw'} height={'100vh'} />
     )
-  );
 };
 
 export default Profile;

@@ -11,6 +11,7 @@ import { ThemeProvider } from "theme-ui";
 import theme from "../styles/theme";
 import { DefaultSeo } from "next-seo";
 import { parseCookies } from "nookies";
+import {Provider} from 'next-auth/client'
 import Router from 'next/router'
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
@@ -37,6 +38,7 @@ function MyApp({ Component, pageProps, token }) {
   return (
     <AuthProvider>
       <ThemeProvider theme={theme}>
+        <Provider session={pageProps.session}>
         <DefaultSeo
           title="EIT: Self Care Reformed"
           description="Emotional Intelligence Trainer (EIT) is a revolutionary look at self care. Rather than have people meditate all day long, EIT looks at CBT practical methodology though mental brain exercises that actually work."
@@ -133,6 +135,7 @@ function MyApp({ Component, pageProps, token }) {
         <Layout token={token}>
           <Component {...pageProps} token={token}/>
         </Layout>
+        </Provider>
       </ThemeProvider>
     </AuthProvider>
   );
@@ -140,43 +143,43 @@ function MyApp({ Component, pageProps, token }) {
 
 export default MyApp;
 
-function redirectUser(ctx, location) {
-  if (ctx.req) {
-      ctx.res.writeHead(302, { Location: location });
-      ctx.res.end();
-  } else {
-      Router.push(location, {query:{prevPath: ctx.pathname}});
-  }
-}
+// function redirectUser(ctx, location) {
+//   if (ctx.req) {
+//       ctx.res.writeHead(302, { Location: location });
+//       ctx.res.end();
+//   } else {
+//       Router.push(location, {query:{prevPath: ctx.pathname}});
+//   }
+// }
 
-MyApp.getInitialProps = async ({ Component, ctx }) => {
-  let pageProps = {};
+// MyApp.getInitialProps = async ({ Component, ctx }) => {
+//   let pageProps = {};
 
-  const jwt = parseCookies(ctx).token
-  const domain = await process.env.NEXT_PUBLIC_DOMAIN
-  const token = await jwt && fetch(
-    `${domain}/api/getToken?token=${jwt}`
-  ).then((data) => data.json());
+//   const jwt = parseCookies(ctx).token
+//   const domain = await process.env.NEXT_PUBLIC_DOMAIN
+//   const token = await jwt && fetch(
+//     `${domain}/api/getToken?token=${jwt}`
+//   ).then((data) => data.json());
   
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx);
-  }
+//   if (Component.getInitialProps) {
+//     pageProps = await Component.getInitialProps(ctx);
+//   }
 
-  if (!jwt) {
-    switch(ctx.pathname.substr(0,5)){
-      case '/home':
-        return redirectUser(ctx,'/login')
-        case '/exer':
-          return redirectUser(ctx,'/login')
-        case '/prof':
-          return redirectUser(ctx, '/login')
-    }
+//   if (!jwt) {
+//     switch(ctx.pathname.substr(0,5)){
+//       case '/home':
+//         return redirectUser(ctx,'/login')
+//         case '/exer':
+//           return redirectUser(ctx,'/login')
+//         case '/prof':
+//           return redirectUser(ctx, '/login')
+//     }
   
     
-}
+// }
 
-return {
-  pageProps,
-  token: await token
-}
-};
+// return {
+//   pageProps,
+//   token: await token
+// }
+// };

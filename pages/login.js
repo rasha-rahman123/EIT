@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { Box, Button, Text } from "rebass";
+import { Box, Button, Flex, Text } from "rebass";
 import Router from "next/router";
 import firebase from "firebase/app";
 import { AuthContext } from "../context/AuthContext";
@@ -7,6 +7,8 @@ import Loading from "../components/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import Modal from "react-modal";
 import Logo from "../components/Logo";
+import { signOut, signIn, useSession } from "next-auth/client";
+import { CgGoogle, CgTwitter, CgFacebook } from "react-icons/cg";
 const customStyles = {
   content: {
     top: "50%",
@@ -45,8 +47,11 @@ const Login = () => {
     event.preventDefault();
     authContext.login(email, pass);
   };
-const logo = useMemo(() => <Logo width={24} animation={false} />,[ ])
-  
+  const logo = useMemo(() => <Logo width={24} animation={false} />, []);
+  const [session] = useSession();
+  useEffect(() => {
+    session && Router.push("/home");
+  }, [session]);
   const weakPass = () => toast("Password not strong enough");
   const handlePassReset = async () => {
     if (email.length === 0) {
@@ -124,7 +129,7 @@ const logo = useMemo(() => <Logo width={24} animation={false} />,[ ])
         top: 0,
         left: 0,
         right: 0,
-
+    
         bg: "rgba(255, 255, 255,0.2)",
         pt: [2, 4],
         pb: 6,
@@ -132,27 +137,29 @@ const logo = useMemo(() => <Logo width={24} animation={false} />,[ ])
       }}
     >
       <Box
-        as="form"
-        onSubmit={(e) => (register ? handleSignUp(e) : handleSubmit(e))}
-        sx={{ p: 3, px: 4 }}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          heiight: '100%',
+          mt: 5
+        }}
       >
-        <Text fontSize={3} fontWeight={800} sx={{ pl: "10%", display: 'flex', flexDirection: 'row' }}>
-       {logo}
+        {/* <Text
+          fontSize={3}
+          fontWeight={800}
+          sx={{ pl: "10%", display: "flex", flexDirection: "row" }}
+        >
+          {logo}
           {register ? (
-            <Text ml={2}>
-            JOIN EIT
-           
-          </Text>
-          
+            <Text ml={2}>JOIN EIT</Text>
           ) : (
-            <Text ml={2}>
-              WELCOME BACK
-             
-            </Text>
-            
+            <Text ml={2}>WELCOME BACK</Text>
           )}
-         
+       
         </Text>
+        
         {register && (
           <>
             <Box my={3} display={"flex"} sx={{ flexDirection: "column" }}>
@@ -389,7 +396,16 @@ const logo = useMemo(() => <Logo width={24} animation={false} />,[ ])
               : "No account? Click here to sign up"}
           </Text>
           <ToastContainer />
-        </Box>
+        </Box> */}
+        <Text sx={{ fontSize: 7, fontWeight: 800 }}>E I T</Text>
+        <Text>- - -</Text>
+        <Text mb={6}>Use one of the following websites to sign in</Text>
+       <Flex> {!session &&
+          [
+            { name: "google", icon: <CgGoogle /> },
+            { name: "twitter", icon: <CgTwitter /> },
+            { name: "facebook", icon: <CgFacebook /> },
+          ].map((x, i) => <Text onClick={() => signIn(x.name)} fontSize={5} mx={3} sx={{":hover":{borderBottom: '10px solid lightblue', cursor: 'pointer'}}}>{x.icon}</Text>)}</Flex>
       </Box>
     </Box>
   );

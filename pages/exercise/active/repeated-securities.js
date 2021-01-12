@@ -8,6 +8,9 @@ import styles from "../../../styles/Home.module.css";
 import firebase from "firebase";
 import { AuthContext } from "../../../context/AuthContext";
 import nookies from 'nookies'
+import { Textarea } from "theme-ui";
+import { useSession } from "next-auth/client";
+import axios from "axios";
 
 export const RepeatedSec = ({}) => {
   var device, recorder;
@@ -38,6 +41,9 @@ export const RepeatedSec = ({}) => {
     msg.lang = "en-US";
     window.speechSynthesis.speak(msg);
   }
+
+  const [session] = useSession()
+  
   const date = new Date();
   const [now, setNow] = useState(date.getSeconds());
   useEffect(() => {
@@ -60,10 +66,8 @@ useEffect(() => {
 
   async function finishTrack() {
     
-    const db = firebase.firestore().collection("Users").doc(uuid);
-    const res = await db.get();
-    await db.set({ score: res.data()['score'] ? res.data()['score'] + 3 : 3 }, { merge: true });
-  
+    await axios('/api/addScore', {params: {name: session.user.email}})
+    
     Router.push({
       pathname: "/home",
       query: { completedActivity: "true", activity: "repeated-securities" },
@@ -104,7 +108,7 @@ useEffect(() => {
   }, [partTwo]);
 
   return (
-    <Box
+  session ?  <Box
       sx={{
         display: "flex",
         width: "100%",
@@ -145,7 +149,7 @@ useEffect(() => {
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              height: "100%",
+              mb: 5
             }}
           >
             <Text my={3}>
@@ -229,18 +233,18 @@ useEffect(() => {
                   {" "}
                   <BiPlusMedical />
                 </Box>
-                <Box
+                <Textarea
                   onSubmit={(e) => {
                     e.preventDefault();
                     addTag();
                   }}
-                  as="input"
+              
                   value={started}
                   onChange={(e) => setStarted(e.target.value)}
                   placeholder="Add Self-Compliment"
                   sx={{
                     width: "100%",
-                    height: 60,
+                    height: '100%',
                     borderRadius: 30,
                     border: "none",
                     background: "white",
@@ -287,18 +291,18 @@ useEffect(() => {
             </Text>
             <Text
               className={styles.floatingText}
-              sx={{ fontSize: 42, fontWeight: 700, mt: 4 }}
+              sx={{ fontSize: 32, fontWeight: 700, mt: 4 , lineHeight: '100%'}}
             >
               {" "}
               {rec && rec.filter((x, i) => i === ten)}
             </Text>
           </Box>
-          <Box sx={{ width: 200, height: 200, margin: "0 auto" }}>
+          <Box sx={{ width: 100, height: 100, position: 'absolute', marginLeft: 'auto' }}>
             <Image src={"/ripple.svg"} />
           </Box>
         </Box>
       )}
-    </Box>
+    </Box> : <> </>
   );
 };
 

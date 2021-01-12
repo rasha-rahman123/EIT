@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import Loading from "../../components/Loading";
 import nookies from 'nookies'
+import {useSession} from 'next-auth/client'
 const args = [
   {
     slug: "repeated-securities",
@@ -55,6 +56,8 @@ export const ExercisePage = ({}) => {
     (await queries) && taskInfo && timeInfo && whyInfo && setLoading(false);
   }, [Router, queries, whyInfo]);
   const imageSize = 300;
+  const [session] = useSession();
+  
   useEffect(() => {
     liked &&
       navigator.canShare &&
@@ -65,7 +68,7 @@ export const ExercisePage = ({}) => {
       });
   }, [liked]);
   return (
-    <Box
+   session ? <Box
       sx={{
         display: "flex",
         width: "100%",
@@ -267,7 +270,7 @@ export const ExercisePage = ({}) => {
           </Box>
         </>
       )}
-    </Box>
+    </Box> : <Box>I do not think you are supposed to be here. <Text as="a" onClick={() => Router.push('/login')}> Click here to login.</Text></Box>
   );
 };
 

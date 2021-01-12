@@ -1,4 +1,6 @@
 import Router from "next/router";
+
+import  {useSession} from 'next-auth/client';
 import { memo, useContext, useEffect, useState } from "react";
 import { Box, Image, Text } from "rebass";
 import Card from "../components/Card";
@@ -12,6 +14,7 @@ import Typist from "react-typist";
 import { VscFeedback, VscMortarBoard } from "react-icons/vsc";
 import Card2 from "../components/Card2";
 import Loading from "../components/Loading";
+import axios from "axios";
 const customStyles = {
   content: {
     top: "50%",
@@ -31,6 +34,7 @@ const customStyles = {
     background: "rgba(255, 255, 255,0.2)",
   },
 };
+
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement("#__next");
@@ -59,14 +63,14 @@ const taskCards = [
     color: "#9C27B0",
     slug: "cog-trainer",
   },
-  {
-    name: "Draw It Down",
-    desc: "Express your feelings visually",
-    desc2: "Draw it out",
-    icon: <IoBrush />,
-    color: "#43A047",
-    slug: "draw-it-down",
-  },
+  // {
+  //   name: "Draw It Down",
+  //   desc: "Express your feelings visually",
+  //   desc2: "Draw it out",
+  //   icon: <IoBrush />,
+  //   color: "#43A047",
+  //   slug: "draw-it-down",
+  // },
 ];
 
 const helpRec = [
@@ -103,22 +107,41 @@ const helpRec = [
     slug: "5-sleep-tips",
   },
 ];
-const Home = ({session, token}) => {
+const Home = () => {
   const { user, logout } = useContext(AuthContext);
   const [userEmail, setUserEmail] = useState(null);
   const [search, setSearch] = useState("");
   const [profileHover, setProfileHover] = useState();
   const [queries, setQueries] = useState();
-  const [score, setScore] = useState();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState();
   const [uid, setUid] = useState();
+  const [session] = useSession();
 
-  useEffect(()=>{
-    setUid(token['uid'])
-  },[token])
+  const [score,setScore] = useState();
+  
+  useEffect(() => {
+    const timer = setTimeout(() => check, 5000)
+    timer;
+  
+    const check = () => {
+      if (session){
+        Router.push('/login')
+      } else Router.push('/login')
+      
+    }
+
+    
+  
+  },[])
 
   useEffect(async () => {
+    var score =  session && await axios('/api/getScore',{params:{name: session.user.email}})
+   score &&  setScore(score.data)
+  },[session])
+  useEffect(async () => {
+   
     var data = await fetch("/api/getMediumArticle").then((r) => r.json());
     await setData(data);
     setPosts(data);
@@ -131,40 +154,25 @@ const Home = ({session, token}) => {
       queries.completedActivity === "true" &&
       setModalOpen(true);
   }, [Router, queries]);
-  useEffect(() => {
-    user && setUserEmail(user.email);
-  }, [user]);
+
   const [doc, setDoc] = useState(null);
 
   const [postser, setPosts] = useState();
   const [posts, setP] = useState();
 
-  useEffect(() => {
-    uid  && loadProfile();
-  }, [uid]);
+  // useEffect(() => {
+  //   token &&
+  //     firebase
+  //       .firestore()
+  //       .collection("Users")
+  //       .doc(token.uid)
+  //       .get()
+  //       .then((data) =>
+  //         data.data()["score"] ? setScore(data.data()["score"]) : setScore(0)
+  //       );
+  // }, [token]);
 
-  async function loadProfile() {
-    const db = await firebase.firestore();
-    const doc = await db.collection("Users").doc(uid).get();
-    if (!doc.exists) {
-    } else {
-      setDoc(doc.data());
-    }
-  }
-
-  useEffect(() => {
-    token &&
-      firebase
-        .firestore()
-        .collection("Users")
-        .doc(token.uid)
-        .get()
-        .then((data) =>
-          data.data()["score"] ? setScore(data.data()["score"]) : setScore(0)
-        );
-  }, [token]);
-
-  return (
+  return (session ?
     <Box
       sx={{
         filter: modalOpen && "blur(2px)",
@@ -182,11 +190,9 @@ const Home = ({session, token}) => {
         p: 4,
       }}
     >
-      <Text sx={{ mt: 2, mb: 1, fontWeight: 700, fontSize: 28 }}>
-        {doc && doc.firstName ? (
-          `Hello, ${doc && doc.firstName && doc.firstName[0].toUpperCase()}${
-            doc && doc.firstName && doc.firstName.substr(1).toLowerCase()
-          }!`
+      <Text sx={{ mt: 2, mb: 1, fontWeight: 700, fontSize: 3 }}>
+        {session ? (
+          `HELLO ${session.user.name.toUpperCase()}!`
         ) : (
           <Loading width={300} height={28} />
         )}
@@ -386,7 +392,7 @@ const Home = ({session, token}) => {
           
         <a href="https://storyset.com/work">Illustration by Freepik Storyset</a>
       </Box>
-    </Box>
+    </Box> : <> </>
   );
 };
 

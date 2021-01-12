@@ -6,7 +6,10 @@ import firebase from "firebase";
 import { AuthContext } from "../../../context/AuthContext";
 import Table from "../../../components/Table";
 import Loading from "../../../components/Loading";
-import nookies from 'nookies'
+import {useSession} from 'next-auth/client'
+import axios from "axios";
+import { PrismaClient } from '@prisma/client'
+
 export const overeat = ({token}) => {
   const inputRef = useRef(null);
   const [arr, setArr] = useState([]);
@@ -22,9 +25,26 @@ export const overeat = ({token}) => {
 
   const [otherData, setOtherData] = useState();
   const rout = useRouter()
-  useEffect(() => {
-    displayResults && token.uid && saveToCloud();
-  }, [displayResults]);
+  // useEffect(() => {
+  //   displayResults && token.uid && saveToCloud();
+  // }, [displayResults]);
+  const [tracks, setTracks] = useState();
+
+  const [session] = useSession() 
+  useEffect(()=> {
+    const findFoodTrackingData = async () => {
+      const req = await axios('/api/findFoodTracking', {
+        params: {
+          email: session.user.email
+        }
+      })
+      
+      await setTracks(req.data)
+    }
+    session && findFoodTrackingData()
+  }, [session])
+
+  console.log(tracks)
 
   function handleSubmit() {
     if (input.length < 1) {
@@ -50,58 +70,31 @@ export const overeat = ({token}) => {
   }
 
   async function finishTrack() {
-    const db = firebase.firestore().collection("Users").doc(token.uid);
-    const res = await db.get();
-    await db.set(
-      { score: res.data()["score"] ? res.data()["score"] + 1 : 1 },
-      { merge: true }
-    );
-
+    await saveToCloud();
+    await axios('/api/addScore', {params: {name: session.user.email}})
     rout.push({
       pathname: "/home",
       query: { completedActivity: "true", activity: "overeat-tracking" },
     });
   }
 
+
   async function saveToCloud() {
     const data = {
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      food: arr,
+      food: arr.join(','),
       water: waterIntake,
     };
-    const get = await firebase
-      .firestore()
-      .collection("Food Tracker")
-      .doc(token.uid)
-      .get();
 
-    const exists = token.uid && get.exists;
-    exists && setOtherData(get.data());
-    if (!exists) {
-      firebase
-        .firestore()
-        .collection("Food Tracker")
-        .doc(token.uid)
-        .set({ 1: data, 2: data, 3: data });
-    } else {
-      const prevData = await [get.data()];
-      const data1 = await data;
-
-      prevData &&
-        (await firebase
-          .firestore()
-          .collection("Food Tracker")
-          .doc(token.uid)
-          .set({
-            1: data1,
-            2: { ...prevData[0][1] },
-            3: { ...prevData[0][2] },
-          })
-          .then(() => {
-            setArr2({ ...prevData[0][1] });
-            setArr3({ ...prevData[0][2] });
-          }));
-    }
+    await axios('/api/addFoodTracking', {
+      
+      params: {
+        email: session.user.email,
+        food : data.food,
+        water: +data.water 
+      }
+    }).then(res => console.log(res))
+    
   }
   function handleDelete(i) {
     var j = [...arr];
@@ -114,7 +107,7 @@ export const overeat = ({token}) => {
   }, [showThisLine2]);
   useMemo(() => console.log(otherData), [otherData]);
   return (
-    <Box
+    session ? <Box
     sx={{
   
       width: "100%",
@@ -190,19 +183,19 @@ export const overeat = ({token}) => {
             </>
           )}
           <Table arr={arr} waterIntake={waterIntake} index={"Current"} />
-          {arr2 ? (
+          {tracks && tracks[0] ? (
             <Table
-              arr={arr2.food}
-              waterIntake={arr2.water}
+              arr={tracks[0].foods.split(',')}
+              waterIntake={tracks[0].water}
               index={"Last Time"}
             />
           ) : (
             <Loading width={"100%"} height={100} />
           )}
-          {arr3 ? (
+      {tracks && tracks[1] ? (
             <Table
-              arr={arr3.food}
-              waterIntake={arr3.water}
+              arr={tracks[1].foods.split(',')}
+              waterIntake={tracks[1].water}
               index={"Second to Last Time"}
             />
           ) : (
@@ -288,7 +281,7 @@ export const overeat = ({token}) => {
           </Box>}
         </>
       )}
-    </Box>
+    </Box> : <> </>
   );
 };
 
