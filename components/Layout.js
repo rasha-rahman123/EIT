@@ -68,6 +68,7 @@ const [doc, setDoc] = useState(null);
           "linear-gradient(180.2deg, #2B85D8 0.83%, #EDB3D7 51.19%, #EDD0AB 100.56%)",
         backgroundBlendMode: "darken",
         display: "flex",
+        flexDirection: 'column',
         justifyContent: "center",
         alignItems: "center",
 
@@ -81,7 +82,7 @@ const [doc, setDoc] = useState(null);
           {" "}
           <Box
             sx={{
-              position: "fixed",
+            
               top: "7px",
               borderRadius: "12px 12px 12px 12px",
               background: "rgba(255, 255, 255,1)",
@@ -91,14 +92,16 @@ const [doc, setDoc] = useState(null);
                   : router.pathname === "/login"
                   ? "none"
                   : "grid",
-              gridTemplateColumns: "50% 50%",
+              gridTemplateColumns: "75% 25%",
               alignItems: "center",
               height: "auto",
               alignSelf: "flex-start",
-              width: "91%",
+              width: "95%",
               px: 3,
               userSelect: "element",
               zIndex: profileHover ? 4 : 2,
+              margin: '0 auto',
+              transition: 'all 300ms ease'
             }}
             fontSize={3}
           >
