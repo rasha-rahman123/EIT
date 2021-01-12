@@ -50,6 +50,6 @@
     "xml2json": "^0.12.0"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.8.0"
+    "@prisma/cli": "^2.14.0"
   }
 }
