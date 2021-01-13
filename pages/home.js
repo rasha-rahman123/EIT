@@ -1,6 +1,6 @@
 import Router from "next/router";
 
-import  {useSession} from 'next-auth/client';
+import  {getSession, useSession} from 'next-auth/client';
 import { memo, useContext, useEffect, useState } from "react";
 import { Box, Image, Text } from "rebass";
 import Card from "../components/Card";
@@ -120,7 +120,8 @@ const Home = () => {
   const [session] = useSession();
 
   const [score,setScore] = useState();
-  
+ 
+
   useEffect(() => {
     const timer = setTimeout(() => check, 5000)
     timer;

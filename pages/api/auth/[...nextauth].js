@@ -1,10 +1,8 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 import Adapters from "next-auth/adapters";
-import prisma from '../../../config/prisma'
+import prisma from "../../../config/prisma";
 import { Provider } from "next-auth/client";
-
-
 
 export default (req, res) =>
   NextAuth(req, res, {
@@ -28,8 +26,18 @@ export default (req, res) =>
     ],
     callbacks: {
       redirect: async (url, baseUrl) => {
+        return Promise.resolve(baseUrl + "/login");
+      },
+      session: async (session, user) => {
+        session.user.id = user.uid;
+        return Promise.resolve(session);
+      },
+      jwt: async (token, user, account, profile, isNewUser) => {
+        if (user) {
+          token.uid = user.id;
+        }
 
-        return Promise.resolve(baseUrl + '/home');
+        return Promise.resolve(token);
       },
     },
     debug: process.env.NODE_ENV === "development",

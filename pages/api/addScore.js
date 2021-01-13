@@ -1,3 +1,4 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../config/prisma'
 
 const findProfile = async (nn) => {
@@ -7,12 +8,12 @@ const findProfile = async (nn) => {
 
   return posts.score;
 };
-export default async (req, res) => {
-  var score = await findProfile(req.query.name)
+export default async (req , res) => {
+  var score = await findProfile(req.query.name + "")
   await prisma.user
     .update({
         data: { score: score + 1},
-        where: { email: req.query.name,}
+        where: { email: req.query.name + "",}
     })
     .then(() => res.send("success"));
 };

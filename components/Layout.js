@@ -10,55 +10,39 @@ import axios from "axios";
 import Footer from "./Footer";
 import { parseCookies } from "nookies";
 import Logo from "./Logo";
-import {signOut, useSession} from 'next-auth/client'
+import { signOut, useSession } from "next-auth/client";
 
-const sendEmail = async (email,message) => {
-  await axios('/api/messageMe', {
-    params:{
-      from: email,
-      text: message
-    }
-  }).then((succ) => {
-    return console.log(succ)
-  }, (rejj) => {
-    return console.log(rejj)
-  })
-}
+const sendEmail = async (email, message) => {
+  
+};
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 
 export const Layout = ({ children }) => {
-
-  const logo = useMemo(() => <Logo width={32} animation={false} />)
+  const logo = useMemo(() => <Logo width={32} animation={false} />);
   const [session] = useSession();
-  const { logout } = useContext(AuthContext);
-const [doc, setDoc] = useState(null);
-  const [uuid, setUuid] = useState()
+
+
 
   const router = useRouter();
 
-  const [score,setScore] = useState();
+  const [score, setScore] = useState();
 
-  
+  const red = async () => {
+    await axios("/api/getScore", {
+      params: { name: session && session.user && session.user.email },
+    }).then((data) => setScore(data.data));
+  };
+
   useEffect(() => {
-    async function getScore() {
-      await axios('/api/getScore',{
-        params: {name: session && session.user && session.user.email}
-       }).then(data => setScore(data.data))
-   
-     }
-
-     session && getScore()
-  },[session])
-
+    session && red();
+  }, [session]);
 
   const [profileHover, setProfileHover] = useState(false);
   const [tokenCheck, setTokenCheck] = useState(true);
 
-
-
   return (
-   <Box
+    <Box
       sx={{
         minHeight: "100vh",
         position: "fixed",
@@ -68,7 +52,7 @@ const [doc, setDoc] = useState(null);
           "linear-gradient(180.2deg, #2B85D8 0.83%, #EDB3D7 51.19%, #EDD0AB 100.56%)",
         backgroundBlendMode: "darken",
         display: "flex",
-        flexDirection: 'column',
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
 
@@ -82,7 +66,6 @@ const [doc, setDoc] = useState(null);
           {" "}
           <Box
             sx={{
-            
               top: "7px",
               borderRadius: "12px 12px 12px 12px",
               background: "rgba(255, 255, 255,1)",
@@ -100,20 +83,21 @@ const [doc, setDoc] = useState(null);
               px: 3,
               userSelect: "element",
               zIndex: profileHover ? 4 : 2,
-              margin: '0 auto',
-              transition: 'all 300ms ease'
+              margin: "0 auto",
+              transition: "all 300ms ease",
             }}
             fontSize={3}
           >
-            <Box >
+            <Box>
               <Text
-                onClick={() => session ? router.push("/home") : router.push('/')}
+                onClick={() =>
+                  session ? router.push("/home") : router.push("/")
+                }
                 sx={{
-                 
                   textAlign: "left",
 
-                  alignItems: 'center',
-                  display: 'flex',
+                  alignItems: "center",
+                  display: "flex",
                   fontWeight: 800,
                   transition: "all 300ms ease",
                   fontSize: 5,
@@ -124,67 +108,78 @@ const [doc, setDoc] = useState(null);
                   },
                 }}
               >
-            {logo}<Text ml={1}> E I T </Text>   <Box sx={{ display: "inline-block" }}>
-          <Text
-            sx={{
-              display: "flex",
-              fontSize: 1,
-              bg: "red",
-              mx: 1,
-              transform: 'scale(0.9) translateY(-1vh)',
-              height: 20,
-              textAlign: "center",
-              justifyContent: 'center',
-              alignItems: 'center',
-              px: 1,
-              borderRadius: 6,
-              color: 'white'
-            }}
-          >
-            BETA
-          </Text>
-        </Box>
+                {logo}
+                <Text ml={1}> E I T </Text>{" "}
+                <Box sx={{ display: "inline-block" }}>
+                  <Text
+                    sx={{
+                      display: "flex",
+                      fontSize: 1,
+                      bg: "red",
+                      mx: 1,
+                      transform: "scale(0.9) translateY(-1vh)",
+                      height: 20,
+                      textAlign: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      px: 1,
+                      borderRadius: 6,
+                      color: "white",
+                    }}
+                  >
+                    BETA
+                  </Text>
+                </Box>
               </Text>
             </Box>
-            {session ? <Box>
-              <CgProfile
-                style={{
-                  cursor: "pointer",
-                  textDecoration: "underline",
-                  textDecorationThickness: 4,
-                  textDecorationColor: "white",
-                  fontSize: 32,
-                  textAlign: "right",
-                  float: "right",
-                  fontWeight: 100,
-                  transform: profileHover ? "rotate(360deg)" : "rotate(0deg)",
-                  transition: "transform 1s ease",
-                }}
-                onClick={() => setProfileHover(!profileHover)}
-              />
-            </Box> : <Text onClick={() => router.push('/login')} sx={{cursor: 'pointer'}}>Sign In</Text>}
+            {session ? (
+              <Box>
+                <CgProfile
+                  style={{
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    textDecorationThickness: 4,
+                    textDecorationColor: "white",
+                    fontSize: 32,
+                    textAlign: "right",
+                    float: "right",
+                    fontWeight: 100,
+                    transform: profileHover ? "rotate(360deg)" : "rotate(0deg)",
+                    transition: "transform 1s ease",
+                  }}
+                  onClick={() => setProfileHover(!profileHover)}
+                />
+              </Box>
+            ) : (
+              <Text
+                onClick={() => router.push("/login")}
+                sx={{ cursor: "pointer" }}
+              ></Text>
+            )}
             <Box></Box>
             <Box
               sx={{
                 visibility: profileHover ? "visible" : "hidden",
-    
+
                 height: profileHover ? "auto" : 0,
                 fontSize: 3,
                 transform: profileHover ? "" : "translateY(-5vh)",
                 transition: "all 300ms ease",
                 opacity: profileHover ? 1 : 0,
                 textAlign: "right",
-                position: 'absolute',
+                position: "absolute",
                 top: 80,
                 p: 2,
-                right: 50  ,
-                bg: profileHover ? 'white' : 'transparent'
+                right: 50,
+                bg: profileHover ? "white" : "transparent",
               }}
             >
               <Text onClick={() => setProfileHover(false)}>
                 <Link href="/profile">
                   <a>
-                  {session && session.user && session.user.name + "'s Account"}
+                    {session &&
+                      session.user &&
+                      session.user.name + "'s Account"}
                   </a>
                 </Link>
               </Text>
@@ -204,9 +199,12 @@ const [doc, setDoc] = useState(null);
           </Box>{" "}
           <Box
             sx={{
-              height: router.pathname  == '/' || router.pathname == '/login' ? "90vh" : "83vh",
-              mt: router.pathname !== '/' && router.pathname !== '/login' && 3,
-   
+              height:
+                router.pathname == "/" || router.pathname == "/login"
+                  ? "90vh"
+                  : "83vh",
+              mt: router.pathname !== "/" && router.pathname !== "/login" && 3,
+
               background: "rgba(255, 255, 255,1)",
               position: "relative",
               borderRadius: "12px 12px 12px 12px",
@@ -241,7 +239,5 @@ const [doc, setDoc] = useState(null);
     </Box>
   );
 };
-
-
 
 export default Layout;
