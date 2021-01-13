@@ -1,11 +1,11 @@
 import Router from "next/router";
 
-import  {getSession, useSession} from 'next-auth/client';
-import { memo, useContext, useEffect, useState } from "react";
+import { getSession, useSession } from "next-auth/client";
+import { memo, useContext, useEffect, useMemo, useState } from "react";
 import { Box, Image, Text } from "rebass";
 import Card from "../components/Card";
 import { AuthContext } from "../context/AuthContext";
-import { MdEventAvailable, MdSpeaker } from "react-icons/md";
+import { MdEventAvailable, MdRssFeed, MdSpeaker } from "react-icons/md";
 import { IoBandage, IoBed, IoBrush, IoFastFood } from "react-icons/io5";
 import Link from "next/link";
 import firebase from "firebase";
@@ -34,7 +34,6 @@ const customStyles = {
     background: "rgba(255, 255, 255,0.2)",
   },
 };
-
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement("#__next");
@@ -107,8 +106,9 @@ const helpRec = [
     slug: "5-sleep-tips",
   },
 ];
-const Home = () => {
+const Home = (props) => {
   const { user, logout } = useContext(AuthContext);
+
   const [userEmail, setUserEmail] = useState(null);
   const [search, setSearch] = useState("");
   const [profileHover, setProfileHover] = useState();
@@ -117,36 +117,113 @@ const Home = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState();
   const [uid, setUid] = useState();
-  const [session] = useSession();
+  const [session, loading] = useSession();
 
-  const [score,setScore] = useState();
+
+
+  const [doc, setDoc] = useState(null);
+
+  const [postser, setPosts] = useState();
+  const [posts, setP] = useState();
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => check, 5000);
+  //   timer;
+
+  //   const check = () => {
+  //     if (session) {
+  //       Router.push("/login");
+  //     } else Router.push("/login");
+  //   };
+  // }, []);
+  const rssFeed = useMemo(
+    () =>
+      postser &&
+      postser["rss"] &&
+      postser["rss"].channel.item.map((x, i) => (
+        <Link key={i} href={x.link._text}>
+          <a>
+            <Card2
+              cardInfo={{
+                name: x.title._text,
+                desc: x.description._cdata.substr(0, 40) + "...",
+                color: postser["rss"].channel.item.indexOf(x),
+              }}
+            />
+          </a>
+        </Link>
+      )),
+    [postser]
+  );
+  const exerciseCards = useMemo(
+    () =>
+      taskCards.filter((bn) =>
+        bn.name.toLowerCase().includes(search.toLowerCase())
+      ).length > 0 ? (
+        taskCards
+
+          .filter((bn) =>
+            bn.name.toLowerCase().includes(search && search.toLowerCase())
+          )
+          .map((x, i) => (
+            <Link
+              key={i}
+              prefetch={true}
+              href={{
+                pathname: `/exercise/${x.slug}`,
+                query: { col: x.color, slug: x.slug, name: x.name },
+              }}
+            >
+              <a>
+                <Card
+                  cardInfo={{
+                    name: x.name,
+                    color: x.color,
+                    icon: x.icon,
+                    desc: x.desc,
+                    desc2: x.desc2,
+                    kee: i,
+                    slug: x.slug,
+                  }}
+                />
+              </a>
+            </Link>
+          ))
+      ) : (
+        <Text
+          sx={{
+            alignSelf: "self-start",
+            px: 2,
+            fontWeight: 800,
+            fontSize: 6,
+            opacity: 0.6,
+          }}
+        >
+          Nothing Found
+        </Text>
+      ),
+    [taskCards, search]
+  );
+  const getScore = async () => {
+   const res = await axios("/api/getScore", { params: { name: session.user.email } });
+    return res.data
+  };
  
-
-  useEffect(() => {
-    const timer = setTimeout(() => check, 5000)
-    timer;
-  
-    const check = () => {
-      if (session){
-        Router.push('/login')
-      } else Router.push('/login')
-      
-    }
-
-    
-  
-  },[])
-
+  const score = useMemo(() => getScore(),[])
   useEffect(async () => {
-    var score =  session && await axios('/api/getScore',{params:{name: session.user.email}})
-   score &&  setScore(score.data)
-  },[session])
-  useEffect(async () => {
-   
-    var data = await fetch("/api/getMediumArticle").then((r) => r.json());
-    await setData(data);
-    setPosts(data);
-    setP(data);
+    var datar =
+      !data &&
+      !postser &&
+      !posts &&
+      (await fetch("/api/getMediumArticle").then((r) => r.json()));
+    !data && setData(datar);
+    !postser && setPosts(datar);
+    !posts && setP(datar);
+    return () => {
+      setData(null);
+      setPosts(null);
+      setP(null);
+    };
   }, []);
   useEffect(async () => {
     Router && (await setQueries(Router.query));
@@ -154,12 +231,8 @@ const Home = () => {
       queries &&
       queries.completedActivity === "true" &&
       setModalOpen(true);
+    return setModalOpen(false);
   }, [Router, queries]);
-
-  const [doc, setDoc] = useState(null);
-
-  const [postser, setPosts] = useState();
-  const [posts, setP] = useState();
 
   // useEffect(() => {
   //   token &&
@@ -173,7 +246,14 @@ const Home = () => {
   //       );
   // }, [token]);
 
-  return (session ?
+  if (loading) {
+    return (
+      <Box>
+        <Text as="h1">Loading</Text>
+      </Box>
+    );
+  }
+  return session ? (
     <Box
       sx={{
         filter: modalOpen && "blur(2px)",
@@ -286,52 +366,7 @@ const Home = () => {
               ))}
           <Text>You now have a total {score} points!</Text>
         </Modal>
-        {!modalOpen &&
-        taskCards.filter((bn) =>
-          bn.name.toLowerCase().includes(search.toLowerCase())
-        ).length > 0 ? (
-          taskCards
-
-            .filter((bn) =>
-              bn.name.toLowerCase().includes(search.toLowerCase())
-            )
-            .map((x, i) => (
-              <Link
-                key={i}
-                prefetch={true}
-                href={{
-                  pathname: `/exercise/${x.slug}`,
-                  query: { col: x.color, slug: x.slug, name: x.name },
-                }}
-              >
-                <a>
-                  <Card
-                    cardInfo={{
-                      name: x.name,
-                      color: x.color,
-                      icon: x.icon,
-                      desc: x.desc,
-                      desc2: x.desc2,
-                      kee: i,
-                      slug: x.slug,
-                    }}
-                  />
-                </a>
-              </Link>
-            ))
-        ) : (
-          <Text
-            sx={{
-              alignSelf: "self-start",
-              px: 2,
-              fontWeight: 800,
-              fontSize: 6,
-              opacity: 0.6,
-            }}
-          >
-            Nothing Found
-          </Text>
-        )}
+        {!modalOpen && exerciseCards}
       </Box>
       <Text
         sx={{
@@ -374,29 +409,14 @@ const Home = () => {
           },
         }}
       >
-        {!modalOpen &&
-          postser &&
-          postser["rss"] &&
-          postser["rss"].channel.item.map((x, i) => (
-            <Link key={i} href={x.link._text}>
-              <a>
-                <Card2
-                  cardInfo={{
-                    name: x.title._text,
-                    desc: x.description._cdata.substr(0, 40) + "...",
-                    color: postser["rss"].channel.item.indexOf(x),
-                  }}
-                />
-              </a>
-            </Link>
-          ))}
-          
+        {!modalOpen && rssFeed}
+
         <a href="https://storyset.com/work">Illustration by Freepik Storyset</a>
       </Box>
-    </Box> : <> </>
+    </Box>
+  ) : (
+    <> </>
   );
 };
 
 export default Home;
-
-

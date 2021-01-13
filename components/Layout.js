@@ -20,26 +20,17 @@ const sendEmail = async (email, message) => {
 
 export const Layout = ({ children }) => {
   const logo = useMemo(() => <Logo width={32} animation={false} />);
-  const [session] = useSession();
-
+  const [session] = useSession()
 
 
   const router = useRouter();
 
-  const [score, setScore] = useState();
+  
 
-  const red = async () => {
-    await axios("/api/getScore", {
-      params: { name: session && session.user && session.user.email },
-    }).then((data) => setScore(data.data));
-  };
 
-  useEffect(() => {
-    session && red();
-  }, [session]);
-
+ 
   const [profileHover, setProfileHover] = useState(false);
-  const [tokenCheck, setTokenCheck] = useState(true);
+
 
   return (
     <Box
@@ -61,10 +52,8 @@ export const Layout = ({ children }) => {
         zIndex: 0,
       }}
     >
-      {tokenCheck ? (
-        <>
-          {" "}
-          <Box
+      <Box sx={{width: '95%'}}>
+      <Box
             sx={{
               top: "7px",
               borderRadius: "12px 12px 12px 12px",
@@ -132,7 +121,7 @@ export const Layout = ({ children }) => {
                 </Box>
               </Text>
             </Box>
-            {session ? (
+          
               <Box>
                 <CgProfile
                   style={{
@@ -147,56 +136,12 @@ export const Layout = ({ children }) => {
                     transform: profileHover ? "rotate(360deg)" : "rotate(0deg)",
                     transition: "transform 1s ease",
                   }}
-                  onClick={() => setProfileHover(!profileHover)}
+                  onClick={() => router.push('/profile')}
                 />
               </Box>
-            ) : (
-              <Text
-                onClick={() => router.push("/login")}
-                sx={{ cursor: "pointer" }}
-              ></Text>
-            )}
-            <Box></Box>
-            <Box
-              sx={{
-                visibility: profileHover ? "visible" : "hidden",
-
-                height: profileHover ? "auto" : 0,
-                fontSize: 3,
-                transform: profileHover ? "" : "translateY(-5vh)",
-                transition: "all 300ms ease",
-                opacity: profileHover ? 1 : 0,
-                textAlign: "right",
-                position: "absolute",
-                top: 80,
-                p: 2,
-                right: 50,
-                bg: profileHover ? "white" : "transparent",
-              }}
-            >
-              <Text onClick={() => setProfileHover(false)}>
-                <Link href="/profile">
-                  <a>
-                    {session &&
-                      session.user &&
-                      session.user.name + "'s Account"}
-                  </a>
-                </Link>
-              </Text>
-              <Text onClick={() => setProfileHover(false)}>
-                <Link href="/profile">
-                  <a>Score: {score ? score : 0}</a>
-                </Link>
-              </Text>
-              <Text
-                onClick={() => setProfileHover(false)}
-                sx={{ cursor: "pointer" }}
-                onClick={() => signOut()}
-              >
-                Sign Out
-              </Text>
-            </Box>
-          </Box>{" "}
+            
+          </Box>
+      </Box>
           <Box
             sx={{
               height:
@@ -232,12 +177,8 @@ export const Layout = ({ children }) => {
             {children}
           </Box>
           <Footer />
-        </>
-      ) : (
-        <Loading width={"100%"} height={"100%"} />
-      )}
     </Box>
-  );
+  )
 };
 
 export default Layout;

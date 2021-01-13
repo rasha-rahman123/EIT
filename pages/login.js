@@ -399,11 +399,11 @@ const Login = () => {
         </Box> */}
         <Text sx={{ fontSize: 7, fontWeight: 800 }}>E I T</Text>
         <Text>- - -</Text>
-        <Text textAlign="center" mb={6}>Use one of the following websites to sign in</Text>
+        <Text textAlign="center" sx={{textTransform: 'uppercase'}} mb={6}>Use one of the following websites to sign in</Text>
        <Flex> {!session &&
           [
             { name: "google", icon: <CgGoogle /> },
-            { name: "twitter", icon: <CgTwitter /> },
+ 
             { name: "facebook", icon: <CgFacebook /> },
           ].map((x, i) => <Text onClick={() => signIn(x.name)} fontSize={5} mx={3} sx={{":hover":{borderBottom: '10px solid lightblue', cursor: 'pointer'}}}>{x.icon}</Text>)}</Flex>
       </Box>

@@ -11,7 +11,7 @@ import { ThemeProvider } from "theme-ui";
 import theme from "../styles/theme";
 import { DefaultSeo } from "next-seo";
 import { parseCookies } from "nookies";
-import {Provider} from 'next-auth/client'
+import {Provider, useSession} from 'next-auth/client'
 import Router from 'next/router'
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
@@ -32,7 +32,6 @@ function MyApp({ Component, pageProps, token }) {
     loadProgressBar();
     registerSW();
   }, []);
-
 
 
   return (
@@ -132,8 +131,8 @@ function MyApp({ Component, pageProps, token }) {
           <link rel="apple-touch-icon" href="/apple-icon.png"></link>
           <meta name="theme-color" content="#317EFB" />
         </Head>
-        <Layout token={token}>
-          <Component {...pageProps} token={token}/>
+        <Layout session={'sesh'}>
+          <Component {...pageProps}  session={'sesh'}/>
         </Layout>
         </Provider>
       </ThemeProvider>

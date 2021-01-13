@@ -56,8 +56,10 @@ export const ExercisePage = ({}) => {
     (await queries) && taskInfo && timeInfo && whyInfo && setLoading(false);
   }, [Router, queries, whyInfo]);
   const imageSize = 300;
-  const [session] = useSession();
+  const [session, raw] = useSession();
   
+
+
   useEffect(() => {
     liked &&
       navigator.canShare &&
@@ -67,6 +69,13 @@ export const ExercisePage = ({}) => {
         text: "If you learn to master your emotions, you can master all",
       });
   }, [liked]);
+
+
+  if(raw){
+    return <Box>
+      <Text as='h1'>Loading</Text>
+    </Box>
+  }
   return (
    session ? <Box
       sx={{

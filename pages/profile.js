@@ -9,7 +9,7 @@ import Loading from "../components/Loading";
 
 
 const Profile = (props) => {
-  const [session] = useSession();
+  const [session, loading] = useSession();
   const [score,setScore] = useState();
  function addScore() {
    axios('/api/addScore',{
@@ -26,7 +26,7 @@ const Profile = (props) => {
    
      }
 
-     session && getScore()
+     session && !score && getScore()
   },[session])
 
   async function deleteProfile() {
@@ -44,6 +44,12 @@ const Profile = (props) => {
           console.log(err);
         });
     }
+  }
+
+  if(loading){
+    return <Box>
+      <Text as='h1'>Loading</Text>
+    </Box>
   }
   return ( session ?
       <Box

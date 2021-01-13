@@ -1,5 +1,5 @@
 import Router from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Box, Button, Image, Text } from "rebass";
 import { BiPlusMedical } from "react-icons/bi";
 import { MdCancel } from "react-icons/md";
@@ -29,6 +29,7 @@ export const RepeatedSec = ({}) => {
   const [speaker, setSpeaker] = useState(true)
   const [prevTime, setPrevTime] = useState();
   const [isPlaying,setIsPlaying] = useState(false);
+  const textAreaRef = useRef()
   async function startRecording(string) {
     var msg = await new SpeechSynthesisUtterance(string);
     var voices = window.speechSynthesis.getVoices();
@@ -81,7 +82,7 @@ useEffect(() => {
     j.push(started);
     setRec(j);
     setStarted("");
-    
+    textAreaRef.current.focus();
   }
 
   function removeTag(i) {
@@ -106,7 +107,16 @@ useEffect(() => {
     !prevTime && partTwo && setSeconds(tog);
     !prevTime && partTwo && window.scrollTo(0,0)
   }, [partTwo]);
+  const checkCode = e => {
+     e.stopPropagation();
 
+    if (e.key === 'Enter'){
+      e.preventDefault();
+      addTag()
+    } else {
+      return;
+    }
+  }
   return (
   session ?  <Box
       sx={{
@@ -238,9 +248,10 @@ useEffect(() => {
                     e.preventDefault();
                     addTag();
                   }}
-              
+                  ref={textAreaRef}
                   value={started}
                   onChange={(e) => setStarted(e.target.value)}
+                  onKeyPress={e => checkCode(e)}
                   placeholder="Add Self-Compliment"
                   sx={{
                     width: "100%",

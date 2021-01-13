@@ -42,6 +42,8 @@ export const overeat = ({token}) => {
       await setTracks(req.data)
     }
     session && findFoodTrackingData()
+
+    return setTracks(null)
   }, [session])
 
   console.log(tracks)
@@ -105,7 +107,7 @@ export const overeat = ({token}) => {
   useEffect(() => {
     !displayResults && showThisLine2 && inputRef.current.focus();
   }, [showThisLine2]);
-  useMemo(() => console.log(otherData), [otherData]);
+
   return (
     session ? <Box
     sx={{
