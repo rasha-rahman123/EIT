@@ -69,10 +69,8 @@ useEffect(() => {
     
     await axios('/api/addScore', {params: {name: session.user.email}})
     
-    Router.push({
-      pathname: "/home",
-      query: { completedActivity: "true", activity: "repeated-securities" },
-    });
+    
+    window.location.assign(`/home?completedActivity=true?activty=repeated-securities`)
   }
   function addTag() {
     if (started.length < 1) {
