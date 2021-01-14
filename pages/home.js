@@ -205,7 +205,7 @@ const Home = (props) => {
     [taskCards, search]
   );
   const getScore = async () => {
-   const res = await axios("/api/getScore", { params: { name: session.user.email } });
+   const res = await axios("/api/getScore", { params: { name: session && session.user && session.user.email } });
     return res.data
   };
  
