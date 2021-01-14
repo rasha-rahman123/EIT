@@ -75,6 +75,7 @@ export const overeat = ({token}) => {
     await saveToCloud();
     await axios('/api/addScore', {params: {name: session.user.email}})
     window.location.assign(`/home?completedActivity=true?activty=overeat-tracking`)
+    
   }
 
 
