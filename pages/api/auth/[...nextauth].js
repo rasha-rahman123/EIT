@@ -16,6 +16,16 @@ export default (req, res) =>
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         state: false
+      }),
+      Providers.GitHub({
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        state: false
+      }),
+      Providers.Twitter({
+        clientId: process.env.TWITTER_KEY,
+        clientSecret: process.env.TWITTER_SECRET,
+        state: false
       })
     ],
     callbacks: {
