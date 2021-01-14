@@ -32,10 +32,10 @@ const args = [
       "Cognitive distortions are found in everyones speech. They are ways people should re evaluate how they speak so they can be heard and understood better.",
   },
   {
-    slug: "draw-it-down",
+    slug: "journal-viewer",
     time: 5,
     taskInfo:
-      "Let us know how you are feeling with our mood selector and then draw a situation out that is bothering you.",
+      "Read and run an experiment on your own data. See how you were a week ago versus how you are now, etc. Find your flaws and embrace it.",
     whyInfo:
       "In CBT, it is proven that jotting information down helps people get out of thought patterns and see cognitive distortions.",
   },

@@ -67,7 +67,7 @@ useEffect(() => {
 
   async function finishTrack() {
     
-    await axios('/api/addScore', {params: {name: session.user.email}})
+    await axios('/api/addScore', {params: {id: session.user.id}})
     
     
     window.location.assign(`/home?completedActivity=true?activty=repeated-securities`)

@@ -2,11 +2,11 @@ import Router from "next/router";
 
 import { getSession, useSession } from "next-auth/client";
 import { memo, useContext, useEffect, useMemo, useState } from "react";
-import { Box, Image, Text } from "rebass";
+import { Box, Button, Flex, Image, Text } from "rebass";
 import Card from "../components/Card";
 import { AuthContext } from "../context/AuthContext";
 import { MdEventAvailable, MdRssFeed, MdSpeaker } from "react-icons/md";
-import { IoBandage, IoBed, IoBrush, IoFastFood } from "react-icons/io5";
+import { IoBandage, IoBed, IoBrush, IoFastFood, IoJournal } from "react-icons/io5";
 import Link from "next/link";
 import firebase from "firebase";
 import Modal from "react-modal";
@@ -15,6 +15,9 @@ import { VscFeedback, VscMortarBoard } from "react-icons/vsc";
 import Card2 from "../components/Card2";
 import Loading from "../components/Loading";
 import axios from "axios";
+import { Grid, Textarea } from "theme-ui";
+import useSWR from "swr";
+
 const customStyles = {
   content: {
     top: "50%",
@@ -33,6 +36,30 @@ const customStyles = {
     zIndex: 20,
     background: "rgba(255, 255, 255,0.2)",
   },
+};
+
+const journalModalStyles = {
+  content: {
+    top: "50%",
+    left: "50%",
+    right: "auto",
+    bottom: "auto",
+    marginRight: "-50%",
+    transform: "translate(-50%, -50%)",
+    border: "none",
+    borderRadius: 30,
+    boxShadow: "0px 0px 3px #00000040, 0px 0px 20px #00000015",
+    display: "flex",
+    flexDirection: "column",
+    textAlign: "center",
+    alignItems: "center",
+    zIndex: 20,
+    background: "rgba(1, 1, 1,0.4)",
+    color: "white",
+  },
+  overlay: {
+    background: '#03174C',
+  }
 };
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
@@ -62,14 +89,14 @@ const taskCards = [
     color: "#9C27B0",
     slug: "cog-trainer",
   },
-  // {
-  //   name: "Draw It Down",
-  //   desc: "Express your feelings visually",
-  //   desc2: "Draw it out",
-  //   icon: <IoBrush />,
-  //   color: "#43A047",
-  //   slug: "draw-it-down",
-  // },
+  {
+    name: "Journal Viewer",
+    desc: "Witness the cognitive distortions in your own daily journals ",
+    desc2: "Track your mood",
+    icon: <IoJournal />,
+    color: "#43A047",
+    slug: "journal-viewer",
+  },
 ];
 
 const helpRec = [
@@ -106,8 +133,11 @@ const helpRec = [
     slug: "5-sleep-tips",
   },
 ];
+
+const fetcherId = (url,id) => axios.get(url,{params:{id: id}}).then(res => res.data)
+
 const Home = (props) => {
-  const { user, logout } = useContext(AuthContext);
+ 
 
   const [userEmail, setUserEmail] = useState(null);
   const [search, setSearch] = useState("");
@@ -119,13 +149,27 @@ const Home = (props) => {
   const [uid, setUid] = useState();
   const [session, loading] = useSession();
 
-
-
+  const [djCompleted, setDJCompleted] = useState('init');
+  const [mood, setMood] = useState();
   const [doc, setDoc] = useState(null);
-
+  const [textarea, setTextarea] = useState('');
   const [postser, setPosts] = useState();
   const [posts, setP] = useState();
 
+  async function saveJournal(id, textarea, mood) {
+    textarea.length > (30*4) && textarea.length < (255*4) &&
+      (await axios("/api/saveJournal", {
+        method: "POST",
+        params: { id: id, msg: textarea, mood: mood },
+      }).then((res) => Router.reload()));
+  }
+
+  const {data: da, error} = useSWR(session && ['/api/cdj',session.user.id],fetcherId)
+  console.log(djCompleted)
+
+  useEffect(() => {
+   da && da['complete'] ? setDJCompleted('truth') : setDJCompleted('fake')
+  },[da])
   // useEffect(() => {
   //   const timer = setTimeout(() => check, 5000);
   //   timer;
@@ -136,11 +180,14 @@ const Home = (props) => {
   //     } else Router.push("/login");
   //   };
   // }, []);
+  useEffect(() => {
+    console.log('q',props)
+  },[])
   const rssFeed = useMemo(
     () =>
       postser &&
-      postser["rss"] &&
-      postser["rss"].channel.item.map((x, i) => (
+      postser["rss"] && 
+      postser["rss"].channel.item.filter((x,i) => i < 5).map((x, i) => (
         <Link key={i} href={x.link._text}>
           <a>
             <Card2
@@ -204,12 +251,19 @@ const Home = (props) => {
       ),
     [taskCards, search]
   );
+  
   const getScore = async () => {
-   const res = await axios("/api/getScore", { params: { name: session && session.user && session.user.email } });
-    return res.data
+    const res =
+      !score &&
+      (await axios("/api/getScore", {
+        params: { id: session && session.user && session.user.id },
+      }));
+    return res.data;
   };
- 
-  const score = useMemo(() => getScore(),[])
+
+  const [score,setScore] = useState();
+
+
   useEffect(async () => {
     var datar =
       !data &&
@@ -234,6 +288,7 @@ const Home = (props) => {
     return setModalOpen(false);
   }, [Router, queries]);
 
+ 
   // useEffect(() => {
   //   token &&
   //     firebase
@@ -339,6 +394,47 @@ const Home = (props) => {
           mt: 2,
         }}
       >
+        <Modal
+          isOpen={djCompleted === 'fake' && session}
+        
+          style={journalModalStyles}
+          contentLabel="Congrats!"
+        >
+          {!loading && session && session.user && da && <>
+          <Text>
+            Welcome back! You have not completed your daily mood and journal as
+            of midnight (NYC).
+          </Text>
+          <Text>Click on the mood that represents how you feel</Text>
+          <Flex>
+            {["😫", "🙄", "😞", "😳", "🙁", "🥰", "😆", "😪", "😃", "🤣"].map(
+              (x, i) => (
+                <Text
+                  onClick={() => setMood(i)}
+                  mx={2}
+                  fontSize={5}
+                  sx={{
+                    textDecoration: mood === i && "underline",
+                    textDecorationWidth: mood === i && "30px",
+                    textUnderlineOffset: 5,
+                    ":hover": {
+                      textDecoration: "underline",
+                      textDecorationWidth: "30px",
+                      textUnderlineOffset: 5,
+                      cursor: "pointer",
+                    },
+                  }}
+                >
+                  {x}
+                </Text>
+              )
+            )}
+          </Flex>
+          <Text>Journal Entry</Text>
+          <Box display="grid" sx={{gridTemplateColumns: '50% 50%'}}><Box sx={{textAlign: "center"}}><Text>Minimum{textarea.length > 30*4 ? '✔️' : '❌'}</Text></Box><Box sx={{textAlign: "center"}}><Text>Maximum{textarea.length < 255*4 ? '✔' : '❌'}</Text></Box></Box>
+          <Textarea  value={textarea} onChange={e => setTextarea(e.target.value)} placeholder="Today, I had an easier time getting out of bed..." />
+          <Button onClick={() => mood && textarea.length > 0 && session && saveJournal(session && session.user.id, textarea, mood)} my={3}><Text color="brayyy" >Save Journal</Text></Button></>}
+        </Modal>
         <Modal
           isOpen={modalOpen}
           onRequestClose={() => setModalOpen(false)}

@@ -8,7 +8,8 @@ import { ToastContainer, toast } from "react-toastify";
 import Modal from "react-modal";
 import Logo from "../components/Logo";
 import { signOut, signIn, useSession } from "next-auth/client";
-import { CgGoogle, CgTwitter, CgFacebook } from "react-icons/cg";
+import { CgGoogle, CgTwitter, CgFacebook, CgGitBranch } from "react-icons/cg";
+import {FaGithub} from 'react-icons/fa'
 const customStyles = {
   content: {
     top: "50%",
@@ -399,13 +400,14 @@ const Login = () => {
         </Box> */}
         <Text sx={{ fontSize: 7, fontWeight: 800 }}>E I T</Text>
         <Text>- - -</Text>
-        <Text textAlign="center" sx={{textTransform: 'uppercase'}} mb={6}>Use one of the following websites to sign in</Text>
+        <Text textAlign="center" sx={{textTransform: 'uppercase'}} mb={6}>SIGN IN THRU</Text>
        <Flex> {!session &&
           [
             { name: "google", icon: <CgGoogle /> },
- 
+            { name: 'twitter', icon: <CgTwitter />},
+            {name: 'github', icon: <FaGithub />},
             { name: "facebook", icon: <CgFacebook /> },
-          ].map((x, i) => <Text onClick={() => signIn(x.name)} fontSize={5} mx={3} sx={{":hover":{borderBottom: '10px solid lightblue', cursor: 'pointer'}}}>{x.icon}</Text>)}</Flex>
+          ].map((x, i) => <Text key={x.name} onClick={() => signIn(x.name)} fontSize={5} mx={3} sx={{":hover":{borderBottom: '10px solid lightblue', cursor: 'pointer'}}}>{x.icon}</Text>)}</Flex>
       </Box>
     </Box>
   );

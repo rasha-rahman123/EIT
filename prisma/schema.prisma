@@ -53,22 +53,32 @@ model User {
   id            Int       @id @default(autoincrement())
   name          String?
   email         String?   @unique
-  score         Int?   @default(0)
+  score         Int?      @default(0)
   emailVerified DateTime? @map("email_verified")
   image         String?
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @default(now()) @map("updated_at")
+  dailyCheck    Boolean?  @default(false)
 
-  @@map("users")
   tracking_food tracking_food[]
+  daily_journal daily_journal[]
+  @@map("users")
 }
 
 model tracking_food {
-  id           Int       @id @default(autoincrement())
-  foods        String?
-  water        Int?
-  tracker      User?     @relation(fields: [trackerEmail], references: [email])
-  trackerEmail String?
-  date         DateTime? @default(now())
+  id        Int       @id @default(autoincrement())
+  foods     String?
+  water     Int?
+  tracker   User?     @relation(fields: [trackerID], references: [id])
+  trackerID Int?
+  date      DateTime? @default(now())
 }
 
+model daily_journal {
+  id               Int       @id @default(autoincrement())
+  moodRating       Int?
+  journalMsg       String?
+  journalAuthorID  Int?
+  journalConnector User?     @relation(fields: [journalAuthorID], references: [id])
+  date             DateTime? @default(now())
+}

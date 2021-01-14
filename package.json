@@ -12,6 +12,7 @@
     "@mdx-js/loader": "^1.6.22",
     "@next/mdx": "^10.0.4",
     "@prisma/client": "^2.8.0",
+    "@types/next-auth": "^3.1.20",
     "@yisheng90/react-loading": "^1.4.4",
     "axios": "^0.21.1",
     "axios-progress-bar": "^1.2.0",

@@ -23,12 +23,15 @@ export default (req, res) =>
         return Promise.resolve(baseUrl + "/login");
       },
       session: async (session, user) => {
-        session.user.id = user.uid;
+
+        session.user.id = user.id;
         return Promise.resolve(session);
       },
       jwt: async (token, user, account, profile, isNewUser) => {
-        if (user) {
-          token.uid = user.id;
+
+        const isSignIn = (user) ? true : false
+        if (isSignIn) {
+          token.id = user.id
         }
 
         return Promise.resolve(token);

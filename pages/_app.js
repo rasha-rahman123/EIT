@@ -11,33 +11,33 @@ import { ThemeProvider } from "theme-ui";
 import theme from "../styles/theme";
 import { DefaultSeo } from "next-seo";
 import { parseCookies } from "nookies";
-import {Provider, useSession} from 'next-auth/client'
+import {Provider, getSession, useSession} from 'next-auth/client'
 import Router from 'next/router'
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-async function registerSW() {
-  if ("serviceWorker" in navigator) {
-    try {
-      await navigator.serviceWorker.register("/sw.js");
-    } catch (err) {
-      console.log("failed");
-    }
-  }
-}
+// async function registerSW() {
+//   if ("serviceWorker" in navigator) {
+//     try {
+//       await navigator.serviceWorker.register("/sw.js");
+//     } catch (err) {
+//       console.log("failed");
+//     }
+//   }
+//}
 
-function MyApp({ Component, pageProps, token }) {
+function MyApp({ Component, pageProps }) {
   useEffect(() => {
     loadProgressBar();
-    registerSW();
+    // registerSW();
   }, []);
 
 
   return (
     <AuthProvider>
       <ThemeProvider theme={theme}>
-        <Provider session={pageProps.session}>
+      
         <DefaultSeo
           title="EIT: Self Care Reformed"
           description="Emotional Intelligence Trainer (EIT) is a revolutionary look at self care. Rather than have people meditate all day long, EIT looks at CBT practical methodology though mental brain exercises that actually work."
@@ -75,7 +75,7 @@ function MyApp({ Component, pageProps, token }) {
             cardType: "summary_large_image",
           }}
         />
-        <Head>
+        {/* <Head>
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
           <meta
@@ -130,11 +130,16 @@ function MyApp({ Component, pageProps, token }) {
 
           <link rel="apple-touch-icon" href="/apple-icon.png"></link>
           <meta name="theme-color" content="#317EFB" />
-        </Head>
-        <Layout session={'sesh'}>
-          <Component {...pageProps}  session={'sesh'}/>
-        </Layout>
-        </Provider>
+        </Head> */}
+          
+       
+        <Provider session={pageProps.session}>
+        <Layout session={pageProps.session}>
+          <Component {...pageProps}  session={pageProps.session}/>
+          </Layout>
+          </Provider>
+      
+        
       </ThemeProvider>
     </AuthProvider>
   );

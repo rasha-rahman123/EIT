@@ -6,45 +6,21 @@ import Router from "next/router";
 import {useSession, signOut} from 'next-auth/client'
 import axios from "axios";
 import Loading from "../components/Loading";
-
-
+import useSWR from 'swr'
+const fetcher = (url,id) => axios.get(url,{params:{id: id}}).then(res => res.data)
 const Profile = (props) => {
   const [session, loading] = useSession();
-  const [score,setScore] = useState();
+
  function addScore() {
    axios('/api/addScore',{
-      params: {name: session.user.email}
+      params: {id: session.user.id}
      })
  
    }
+  
+const { data,error} =  useSWR(session && ['/api/getScore', session.user.id], fetcher)
 
-  useEffect(() => {
-    async function getScore() {
-      await axios('/api/getScore',{
-        params: {name: session.user.email}
-       }).then(data => setScore(data.data))
-   
-     }
 
-     session && !score && getScore()
-  },[session])
-
-  async function deleteProfile() {
-    if (window.confirm("Do you really want to delete your account?")) {
-      const db = await firebase.firestore();
-      const doc = await db.collection("Users").doc(uuid);
-      const user = await firebase.auth().currentUser;
-      user
-        .delete()
-        .then(() => {
-          doc.delete();
-          logout();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }
 
   if(loading){
     return <Box>
@@ -96,7 +72,7 @@ const Profile = (props) => {
             Hello, {session && session.user.name}
           </Text>
           <Text fontSize={3} fontWeight={800} color={"brayyy"}>
-            {`You have, ${score} points! You can get more by doing `}
+            {`You have, ${data} points! You can get more by doing `}
             <Text
               as="a"
               href="/home"
@@ -112,20 +88,7 @@ const Profile = (props) => {
           <Text fontSize={2} fontWeight={800} color={"brayyy"}>
             Your current email is {session.user.email}
           </Text>
-          <Text fontSize={1} fontWeight={800} color={"brayyy"}>
-            Want to terminate account?{" "}
-            <Text
-              as="a"
-              onClick={() => deleteProfile()}
-              sx={{
-                display: "inline",
-                textDecoration: "underline",
-                cursor: "pointer",
-              }}
-            >
-              <a>CLICK HERE</a>
-            </Text>
-          </Text>
+          
 
           <Text mt={5} fontSize={1} fontWeight={800} color={"brayyy"}>
             Emotional Intelligence Trainer (EIT) is a SaaS self care application
