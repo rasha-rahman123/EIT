@@ -38,7 +38,7 @@ const labels = [
     await axios('/api/addScore', {params: {id: id}})
     
     
-    window.location.assign(`/home?completedActivity=true?activty=repeated-securities`)
+    window.location.assign(`/home?completedActivity=true?activty=worry-report`)
   }
 export const worryReport = ({}) => {
   const [stage, setStage] = useState(0);

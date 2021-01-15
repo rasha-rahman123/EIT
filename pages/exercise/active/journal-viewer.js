@@ -59,9 +59,7 @@ console.log(data)
         Journal Viewer
       </Text>
       </Box>
-      <Box sx={aquaTab}>
-        <Text>Daily Journals</Text>
-      </Box>
+
      {data && data.map((x,i) => <JournalCard x={x} />)}
     </Box>
   );

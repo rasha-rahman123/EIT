@@ -123,7 +123,7 @@ useEffect(() => {
         flexDirection: "column",
         position: "absolute",
         p: 4,
-        background: partTwo ? "radial-gradient(#3AACFF,lightblue)" : "#F5F5F8",
+        background: partTwo ? "radial-gradient(#3AACFF,#F5F5F8)" : "#F5F5F8",
         backgroundSize: partTwo && "500% 500%",
         backgroundPosition: prevTime ? "50% 100%" : partTwo && "50% 0%",
         transition: "background-position 60s ease",
@@ -131,6 +131,7 @@ useEffect(() => {
         left: 0,
         bottom: 0,
         right: 0,
+       
       }}
     >
       {!partTwo ? (
@@ -282,23 +283,23 @@ useEffect(() => {
               alignItems: "center",
               display: "flex",
               justifyContent: "center",
-              color: "white",
+              color: "brayyy",
               textAlign: "center",
               flexDirection: "column",
               whiteSpace: "pre-wrap",
             }}
           >
             <Typist cursor={{show: false}}>
-              <Text>
+              <Text color="brayyy">
                 Please repeat the following lines to yourself or outloud as they
                 are presented for the next minute.
               </Text>
             </Typist>
-            <Text>---</Text>
-            <Text opacity={0.5} fontSize={24}>
+            <Text color="brayyy">---</Text>
+            <Text color="brayyy" opacity={0.5} fontSize={24}>
               repeat until next phrase shows
             </Text>
-            <Text
+            <Text color="brayyy"
               className={styles.floatingText}
               sx={{ fontSize: 32, fontWeight: 700, mt: 4 , lineHeight: '100%'}}
             >
