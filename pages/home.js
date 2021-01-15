@@ -42,6 +42,7 @@ const journalModalStyles = {
   content: {
     top: "50%",
     left: "50%",
+    width: '100%',
     right: "auto",
     bottom: "auto",
     marginRight: "-50%",
@@ -400,6 +401,7 @@ const Home = (props) => {
           style={journalModalStyles}
           contentLabel="Congrats!"
         >
+          <Box sx={{fontSize: 6, top: -50, fontWeight: 800, color: 'white'}}>EIT</Box>
           {!loading && session && session.user && da && <>
           <Text>
             Welcome back! You have not completed your daily mood and journal as
@@ -431,7 +433,7 @@ const Home = (props) => {
             )}
           </Flex>
           <Text>Journal Entry</Text>
-          <Box display="grid" sx={{gridTemplateColumns: '50% 50%'}}><Box sx={{textAlign: "center"}}><Text>Minimum{textarea.length > 30*4 ? '✔️' : '❌'}</Text></Box><Box sx={{textAlign: "center"}}><Text>Maximum{textarea.length < 255*4 ? '✔' : '❌'}</Text></Box></Box>
+          <Box display="grid" sx={{gridTemplateColumns: '50% 50%'}}><Box sx={{textAlign: "center"}}><Text>Minimum{textarea.split(' ').length > 21 ? '✔️' : '❌'}</Text></Box><Box sx={{textAlign: "center"}}><Text>Maximum{textarea.split(' ').length < 80 ? '✔' : '❌'}</Text></Box></Box>
           <Textarea  value={textarea} onChange={e => setTextarea(e.target.value)} placeholder="Today, I had an easier time getting out of bed..." />
           <Button onClick={() => mood && textarea.length > 0 && session && saveJournal(session && session.user.id, textarea, mood)} my={3}><Text color="brayyy" >Save Journal</Text></Button></>}
         </Modal>

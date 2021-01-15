@@ -1,33 +1,23 @@
 import axios from "axios";
 import { useSession } from "next-auth/client";
-import { Router } from "next/router";
-import { Box, Text } from "rebass";
+import Router  from "next/router";
+import { Box, Button, Text } from "rebass";
 import useSWR from "swr";
+import JournalCard from "../../../components/JournalCard";
 
 const aquaTab = {
   width: "100%",
-  height: 50,
   bg: "#85CED1",
   borderRadius: 10,
-  display: "grid",
-  gridTemplateColumns: "5% 10% 5% 80%",
+  display: "flex",
+    flexDirection: 'column',
   alignItems: 'center',
   px: 2,
   mb: 3
 };
 
-const pinkTab = {
-    width: "100%",
 
-    bg: "pink",
-    borderRadius: 10,
-    display: "grid",
-    gridTemplateColumns: "5% 10% 5% 80%",
-    alignItems: 'center',
-    px: 2,
-    mb: 2
-  };
-const moods = ["😫", "🙄", "😞", "😳", "🙁", "🥰", "😆", "😪", "😃", "🤣"]
+
 const fetcher = (url,id) => axios.get(url,{params:{id: id}}).then(res => res.data)
 
 export const journalViewer = (props) => {
@@ -70,18 +60,9 @@ console.log(data)
       </Text>
       </Box>
       <Box sx={aquaTab}>
-        <Text>ID</Text>
-        <Text>DATE</Text>
-        <Text>MOOD</Text>
-        <Text>ENTRY</Text>
-     
+        <Text>Daily Journals</Text>
       </Box>
-     {data && data.map((x,i) =>  <Box key={x.id} sx={pinkTab}>
-        <Text>{x.id}</Text>
-        <Text>{x.date.substr(0,10)}</Text>
-        <Text textAlign="center">{moods[x.moodRating]}</Text>
-        <Text>{x.journalMsg}</Text>
-      </Box>)}
+     {data && data.map((x,i) => <JournalCard x={x} />)}
     </Box>
   );
 };
