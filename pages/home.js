@@ -158,7 +158,7 @@ const Home = (props) => {
   const [posts, setP] = useState();
 
   async function saveJournal(id, textarea, mood) {
-    textarea.length > (30*4) && textarea.length < (255*4) &&
+    textarea.split(' ').length > 21 && textarea.split(' ').length < 80 &&
       (await axios("/api/saveJournal", {
         method: "POST",
         params: { id: id, msg: textarea, mood: mood },
