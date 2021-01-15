@@ -43,7 +43,7 @@ export const RepeatedSec = ({}) => {
     window.speechSynthesis.speak(msg);
   }
 
-  const [session] = useSession()
+  const [session,loading] = useSession()
   
   const date = new Date();
   const [now, setNow] = useState(date.getSeconds());
@@ -115,7 +115,43 @@ useEffect(() => {
       return;
     }
   }
-  return (
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          transition: "all 300ms ease",
+          width: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+
+          display: "flex",
+          width: "100%",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 4,
+        }}
+      >
+        <Text fontSize={2}>LOADING APP</Text>
+        <Box sx={{ width: 100, height: 20, bg: "gray", position: "relative" }}>
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              height: 20,
+              bg: "brayyy",
+              width: loading ? 90 : 20,
+            }}
+          />
+        </Box>
+      </Box>
+    );
+  }
+  if (session) return (
   session ?  <Box
       sx={{
         display: "flex",

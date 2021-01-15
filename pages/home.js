@@ -406,7 +406,7 @@ const Home = (props) => {
               )
             )}
           </Flex>
-          <Text>Journal Entry</Text>
+          <Text>Journal Entry (please write until minimum turns into check)</Text>
           <Box display="grid" sx={{gridTemplateColumns: '50% 50%'}}><Box sx={{textAlign: "center"}}><Text>Minimum{textarea.split(' ').length > 21 ? '✔️' : '❌'}</Text></Box><Box sx={{textAlign: "center"}}><Text>Maximum{textarea.split(' ').length < 80 ? '✔' : '❌'}</Text></Box></Box>
           <Textarea  value={textarea} onChange={e => setTextarea(e.target.value)} placeholder="Today, I had an easier time getting out of bed..." />
           <Button onClick={() => mood && textarea.length > 0 && session && saveJournal(session && session.user.id, textarea, mood)} my={3}><Text color="brayyy" >Save Journal</Text></Button></>}

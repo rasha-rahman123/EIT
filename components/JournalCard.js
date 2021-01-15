@@ -7,11 +7,11 @@ const pinkTab = {
   width: "100%",
 
   bg: "transparent",
-  border: "2px solid #2c2c2e60",
+  border: "2px solid #2c2c2e80",
   borderRadius: 10,
   display: "flex",
   flexDirection: "column",
- 
+    color: '#2c2c2e80',
   px: 2,
   mb: 2,
 };
@@ -28,7 +28,7 @@ export const JournalCard = ({ x }) => {
     <Box key={x.id} sx={pinkTab}>
       <Box sx={{display: 'flex', width: '100%',flexDirection: 'row', justifyContent: 'space-between'}}>
    
-        <Text fontWeight={800} fontSize={3}>{moment(x.date.substr(0, 10), "YYYY-MM-DD").format('MMMM Do, YYYY')}</Text>
+        <Text  color={'#2c2c2e'} fontWeight={800} fontSize={3}>{moment(x.date.substr(0, 10), "YYYY-MM-DD").format('MMMM Do, YYYY')}</Text>
         <Text  fontWeight={800} fontSize={4} textAlign="center">{moods[x.moodRating]}</Text>
       </Box>
 

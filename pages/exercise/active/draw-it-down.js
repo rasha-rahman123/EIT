@@ -9,7 +9,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import styles from "../../../styles/Draw.module.css";
 import useLongPress from "../../../hooks/useLongPress";
 import nookies from 'nookies'
-
+import {useSession} from 'next-auth/client'
 export const drawItDown = ({token}) => {
   const [answerHover, setAnswerHover] = useState();
   const [answerHoverTemp, setAnswerHoverTemp] = useState();
@@ -152,6 +152,8 @@ export const drawItDown = ({token}) => {
   }, [drawingsEnded]);
   const [pic, setPic] = useState()
 
+  const [session,loading]= useSession()
+
 
   const createImage = async () => {
     var image = await createImageElement();
@@ -232,7 +234,7 @@ export const drawItDown = ({token}) => {
     }
   };
 
-  return (
+  if (session) return (
     <>
       <Box
         color="#3AACFF"

@@ -85,9 +85,7 @@ const { data,error} =  useSWR(session && ['/api/getScore', session.user.id], fet
               <a>exercises</a>
             </Text>
           </Text>
-          <Text fontSize={2} fontWeight={800} color={"brayyy"}>
-            Your current email is {session.user.email}
-          </Text>
+       
           
 
           <Text mt={5} fontSize={1} fontWeight={800} color={"brayyy"}>
