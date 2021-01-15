@@ -6,7 +6,7 @@ import { Box, Button, Flex, Image, Text } from "rebass";
 import Card from "../components/Card";
 import { AuthContext } from "../context/AuthContext";
 import { MdEventAvailable, MdRssFeed, MdSpeaker } from "react-icons/md";
-import { IoBandage, IoBed, IoBrush, IoFastFood, IoJournal } from "react-icons/io5";
+import { IoBandage, IoBed, IoBrush, IoFastFood, IoJournal, IoReceipt } from "react-icons/io5";
 import Link from "next/link";
 import firebase from "firebase";
 import Modal from "react-modal";
@@ -98,42 +98,16 @@ const taskCards = [
     color: "#43A047",
     slug: "journal-viewer",
   },
+  {
+    name: "The Worry Report",
+    desc: "Lets walk through one of your worries",
+    desc2: "Helps lower problem stress",
+    icon: <IoReceipt />,
+    color: "#b09c27",
+    slug: "worry-report",
+  },
 ];
 
-const helpRec = [
-  {
-    name: "How 2 Get Meditation To Actually Work",
-    desc: "What makes meditation powerful",
-    desc2: "How can we reach that",
-    icon: <MdEventAvailable />,
-    color: "#113FA6",
-    slug: "how-2-use-meditation",
-  },
-  {
-    name: "Exposing My Fears",
-    desc: "How to carefully let fears go",
-    desc2: "How can we reach that",
-    icon: <VscMortarBoard />,
-    color: "#3C8033",
-    slug: "exposing-my-fears",
-  },
-  {
-    name: "Am I Depressed",
-    desc: "What makes one depressed",
-    desc2: "How can we reach that",
-    icon: <IoBandage />,
-    color: "#82771A",
-    slug: "am-i-depressed",
-  },
-  {
-    name: "5 Tips to Sleep Better",
-    desc: "Break some bad sleep habits",
-    desc2: "How can we reach that",
-    icon: <IoBed />,
-    color: "#7D2B2B",
-    slug: "5-sleep-tips",
-  },
-];
 
 const fetcherId = (url,id) => axios.get(url,{params:{id: id}}).then(res => res.data)
 

@@ -39,6 +39,14 @@ const args = [
     whyInfo:
       "In CBT, it is proven that jotting information down helps people get out of thought patterns and see cognitive distortions.",
   },
+  {
+    slug: "worry-report",
+    time: 5,
+    taskInfo:
+      "Answer a couple questions about your worry and then re evaluate your worry.",
+    whyInfo:
+      "When you are worried about something, it’s easy to imagine the worst thing that could possibly happen. In reality, these worries may never come true. What could happen isn’t the same as what will happen.",
+  },
 ];
 export const ExercisePage = ({}) => {
   const [queries, setQueries] = useState();
