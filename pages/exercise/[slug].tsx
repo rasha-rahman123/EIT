@@ -119,7 +119,6 @@ export const ExercisePage : React.FC = ({}) => {
         bg: "rgba(255, 255, 255,0.2)",
         top: 0,
         left: 0,
-
         right: 0,
         borderRadius: 12,
       }}

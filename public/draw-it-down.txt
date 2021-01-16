@@ -5,9 +5,9 @@ import SignatureCanvas from "react-signature-canvas";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
-import { AuthContext } from "../../../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import styles from "../../../styles/Draw.module.css";
-import useLongPress from "../../../hooks/useLongPress";
+import useLongPress from "../hooks/useLongPress";
 import nookies from 'nookies'
 import {useSession} from 'next-auth/client'
 export const drawItDown = () => {
