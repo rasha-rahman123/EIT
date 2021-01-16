@@ -1,52 +1,38 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Typist from "react-typist";
 import { Box, Button, Text } from "rebass";
-import Router, { useRouter } from "next/router";
-import firebase from "firebase";
-import { AuthContext } from "../../../context/AuthContext";
+import Router from "next/router";
 import Table from "../../../components/Table";
 import Loading from "../../../components/Loading";
-import {useSession} from 'next-auth/client'
+import { useSession } from "next-auth/client";
 import axios from "axios";
-import { PrismaClient } from '@prisma/client'
 
-export const overeat = ({token}) => {
-  const inputRef = useRef(null);
-  const [arr, setArr] = useState([]);
-  const [arr2, setArr2] = useState([]);
-  const [arr3, setArr3] = useState([]);
-  const [input, setInput] = useState("");
-  const [q2, setQ2] = useState(false);
-  const [waterIntake, setWaterIntake] = useState(0);
-  const [showThisLine, setShowThisLine] = useState(true);
-  const [showThisLine2, setShowThisLine2] = useState(false);
-  const [displayResults, setDisplayResults] = useState(false);
-  const date = new Date();
+export const overeat : React.FC = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [arr, setArr] = useState<any[]>([]);
+  const [input, setInput] = useState<string>("");
+  const [q2, setQ2] = useState<boolean>(false);
+  const [waterIntake, setWaterIntake] = useState<number>(0);
+  const [showThisLine2, setShowThisLine2] = useState<boolean>(false);
+  const [displayResults, setDisplayResults] = useState<boolean>(false);
+  const [tracks, setTracks] = useState<any[]>();
+  const [session, loading] = useSession();
 
-  const [otherData, setOtherData] = useState();
-  const rout = useRouter()
-  // useEffect(() => {
-  //   displayResults && token.uid && saveToCloud();
-  // }, [displayResults]);
-  const [tracks, setTracks] = useState();
-
-  const [session, loading] = useSession() 
-  useEffect(()=> {
+  useEffect(() => {
     const findFoodTrackingData = async () => {
-      const req = await axios('/api/findFoodTracking', {
+      const req = await axios("/api/findFoodTracking", {
         params: {
-          id: session.user.id
-        }
-      })
-      
-      await setTracks(req.data)
-    }
-    session && findFoodTrackingData()
+          //@ts-ignore
+          id: session.user.id,
+        },
+      });
 
-    return setTracks(null)
-  }, [session])
+      setTracks(req.data);
+    };
+    session && findFoodTrackingData();
 
-  console.log(tracks)
+    return setTracks(null);
+  }, [session]);
 
   function handleSubmit() {
     if (input.length < 1) {
@@ -56,7 +42,7 @@ export const overeat = ({token}) => {
       setInput("");
       return setQ2(true);
     }
-    var j = [...arr];
+    var j: string[] = [...arr];
     j.push(input);
     setInput("");
     setArr(j);
@@ -66,37 +52,36 @@ export const overeat = ({token}) => {
     if (typeof +input !== "number") {
       return alert("please type digit numbers only");
     }
-    setWaterIntake(input);
+    setWaterIntake(+input);
     setInput("");
     setDisplayResults(true);
   }
 
   async function finishTrack() {
     await saveToCloud();
-    await axios('/api/addScore', {params: {id: session.user.id}})
-    window.location.assign(`/home?completedActivity=true?activty=overeat-tracking`)
-    
+    //@ts-ignore
+    await axios("/api/addScore", { params: { id: session.user.id } });
+    window.location.assign(
+      `/home?completedActivity=true?activty=overeat-tracking`
+    );
   }
-
 
   async function saveToCloud() {
     const data = {
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      food: arr.join(','),
+      food: arr.join(","),
       water: waterIntake,
     };
 
-    await axios('/api/addFoodTracking', {
-      
+    await axios("/api/addFoodTracking", {
       params: {
+        //@ts-ignore
         id: session.user.id,
-        food : data.food,
-        water: +data.water 
-      }
-    }).then(res => console.log(res))
-    
+        food: data.food,
+        water: +data.water,
+      },
+    }).then((res) => console.log(res));
   }
-  function handleDelete(i) {
+  function handleDelete(i: number) {
     var j = [...arr];
     j.splice(i, 1);
     setArr(j);
@@ -105,7 +90,6 @@ export const overeat = ({token}) => {
   useEffect(() => {
     !displayResults && showThisLine2 && inputRef.current.focus();
   }, [showThisLine2]);
-
 
   if (loading) {
     return (
@@ -117,9 +101,7 @@ export const overeat = ({token}) => {
           top: 0,
           left: 0,
           right: 0,
-
           display: "flex",
-          width: "100%",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
@@ -142,22 +124,20 @@ export const overeat = ({token}) => {
       </Box>
     );
   }
-  
-  return (
-    session ? <Box
-    sx={{
-  
-      width: "100%",
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      display: "flex",
-      width: "100%",
-      flexDirection: "column",
-      p: 4
-    }}
-  >
+
+  return session ? (
+    <Box
+      sx={{
+        width: "100%",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        display: "flex",
+        flexDirection: "column",
+        p: 4,
+      }}
+    >
       <Box
         sx={{
           flexDirection: "row",
@@ -173,13 +153,13 @@ export const overeat = ({token}) => {
           {"<"}
         </Box>
         <Text fontWeight="800" fontSize={3}>
-        Overeating Tracker
-      </Text>
+          Food Intake Tracker
+        </Text>
       </Box>
-     
+
       {displayResults ? (
         <>
-          <Typist cursor={{show: false}}>
+          <Typist cursor={{ show: false }}>
             <Text color={"black"}>
               Generating report and checking for old reports...
             </Text>
@@ -188,7 +168,6 @@ export const overeat = ({token}) => {
             <>
               <Text>Once you've read through, click here to finish</Text>{" "}
               <Box
-         
                 sx={{
                   width: "100%",
                   my: 2,
@@ -222,40 +201,42 @@ export const overeat = ({token}) => {
           <Table arr={arr} waterIntake={waterIntake} index={"Current"} />
           {tracks && tracks[0] ? (
             <Table
-              arr={tracks[0].foods.split(',')}
+              arr={tracks[0].foods.split(",")}
               waterIntake={tracks[0].water}
               index={"Last Time"}
             />
           ) : (
-            <Loading width={"100%"} height={100} />
+            <Loading width={"100%"} height={"100px"} rows={1} />
           )}
-      {tracks && tracks[1] ? (
+          {tracks && tracks[1] ? (
             <Table
-              arr={tracks[1].foods.split(',')}
+              arr={tracks[1].foods.split(",")}
               waterIntake={tracks[1].water}
               index={"Second to Last Time"}
             />
           ) : (
-            <Loading width={"100%"} height={100} />
+            <Loading width={"100%"} height={"100px"} rows={1} />
           )}
         </>
       ) : (
         <>
-         {!displayResults && 
+          {!displayResults && (
             <Text>
               Hello, I will be guiding you on tracking your foods. It may seem
               long and boring, but it can be done really quickly. I just need
               some information from you. You can just respond back on the
               response line!
             </Text>
-         }
-          {showThisLine && (
-            <Typist onTypingDone={() => setShowThisLine2(true)} cursor={{show: false}}  startDelay={500}>
-              <Text my={2} color={"black"}>
-                What did you eat yesterday? Hit enter after every food name
-              </Text>
-            </Typist>
           )}
+          <Typist
+            onTypingDone={() => setShowThisLine2(true)}
+            cursor={{ show: false }}
+            startDelay={500}
+          >
+            <Text my={2} color={"black"}>
+              What did you eat yesterday? Hit enter after every food name
+            </Text>
+          </Typist>
           {arr &&
             arr.map((x, i) => (
               <Box>
@@ -275,7 +256,7 @@ export const overeat = ({token}) => {
               </Box>
             ))}
           {arr.length > 2 && !q2 && (
-            <Typist  cursor={{show: false}}>
+            <Typist cursor={{ show: false }}>
               <Text color={"black"}>
                 Anything else you would like to add? (type 'no' to go to next
                 step)
@@ -283,44 +264,49 @@ export const overeat = ({token}) => {
             </Typist>
           )}
           {q2 && (
-            <Typist cursor={{show: false}}>
+            <Typist cursor={{ show: false }}>
               <Text color={"black"}>
                 And how many cups of water did you drink yesterday?
               </Text>
             </Typist>
           )}
-         { showThisLine2 && <Box
-            as="form"
-            display={showThisLine ? "initial" : "none"}
-            onSubmit={(e) => {
-              e.preventDefault();
-              q2 ? handleWaterIntake() : handleSubmit();
-            }}
-          >
-            <Text sx={{ display: "inline-block" }}>-</Text>
+          {showThisLine2 && (
             <Box
-              as="input"
-              width="90%"
-              placeholder={q2 ? "cups of water" : "foods (eg. red pasta)"}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              ref={inputRef}
-              sx={{
-                background: "none",
-                fontSize: 2,
-                border: "none",
-                display: "inline-block",
-                ":focus": {
-                  outline: "none",
-                },
+              as="form"
+              display="initial"
+              onSubmit={(e) => {
+                e.preventDefault();
+                q2 ? handleWaterIntake() : handleSubmit();
               }}
-            />
-          </Box>}
+            >
+              <Text sx={{ display: "inline-block" }}>-</Text>
+              <Box
+                as="input"
+                width="90%"
+                placeholder={q2 ? "cups of water" : "foods (eg. red pasta)"}
+                value={input}
+                onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                  setInput(e.currentTarget.value)
+                }
+                ref={inputRef}
+                sx={{
+                  background: "none",
+                  fontSize: 2,
+                  border: "none",
+                  display: "inline-block",
+                  ":focus": {
+                    outline: "none",
+                  },
+                }}
+              />
+            </Box>
+          )}
         </>
       )}
-    </Box> : <> </>
+    </Box>
+  ) : (
+    <> </>
   );
 };
 
 export default overeat;
-

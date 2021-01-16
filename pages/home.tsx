@@ -74,12 +74,12 @@ const taskCards = [
     slug: "repeated-securities",
   },
   {
-    name: "Overeating Tracker",
+    name: "Food Intake Tracker",
     desc: "Track what you just ate",
     desc2: "Helps build control",
     icon: <IoFastFood />,
     color: "blue",
-    slug: "overeat-tracking",
+    slug: "food-tracking",
   },
   {
     name: "Toxic Message Detector",

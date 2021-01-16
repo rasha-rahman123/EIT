@@ -9,7 +9,7 @@ import { Textarea } from "theme-ui";
 import { useSession } from "next-auth/client";
 import axios from "axios";
 
-export const RepeatedSec = ({}) => {
+export const RepeatedSec : React.FC = ({}) => {
   const [rec, setRec] = useState([]);
   const [started, setStarted] = useState<string>("");
   const [partTwo, setPartTwo] = useState<boolean>(false);
@@ -21,7 +21,7 @@ export const RepeatedSec = ({}) => {
   const textAreaRef = useRef<HTMLTextAreaElement>()
   const [session,loading] = useSession()
 
-  async function startRecording(string) {
+  async function startRecording(string : string) {
     var msg = await new SpeechSynthesisUtterance(string);
     var voices = window.speechSynthesis.getVoices();
     console.log(voices);
@@ -70,7 +70,7 @@ useEffect(() => {
     textAreaRef.current.focus();
   }
 
-  function removeTag(i) {
+  function removeTag(i : number) {
     var j = [...rec];
     j.splice(i, 1);
     setRec(j);

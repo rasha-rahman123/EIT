@@ -1,28 +1,18 @@
 import axios from "axios";
 import { useSession } from "next-auth/client";
 import Router from "next/router";
-import { Box, Button, Text } from "rebass";
+import { Box, Text } from "rebass";
 import useSWR from "swr";
 import JournalCard from "../../../components/JournalCard";
 
-const aquaTab = {
-  width: "100%",
-  bg: "#85CED1",
-  borderRadius: 10,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  px: 2,
-  mb: 3,
-};
-
-const fetcher = (url, id) =>
+const fetcher = (url : string, id : number) =>
   axios.get(url, { params: { id: id } }).then((res) => res.data);
 
-export const journalViewer = (props) => {
+export const journalViewer : React.FC = () => {
   const [session, loading] = useSession();
-  const { data, error } = useSWR(
-    session && ["/api/getJournals", session.user.id],
+  const { data } = useSWR(
+    //@ts-ignore
+    ["/api/getJournals",  session && session.user.id],
     fetcher
   );
   if (loading) {
@@ -35,9 +25,7 @@ export const journalViewer = (props) => {
           top: 0,
           left: 0,
           right: 0,
-
           display: "flex",
-          width: "100%",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
@@ -69,9 +57,7 @@ export const journalViewer = (props) => {
         top: 0,
         left: 0,
         right: 0,
-
         display: "flex",
-        width: "100%",
         flexDirection: "column",
 
         p: 4,
@@ -96,7 +82,7 @@ export const journalViewer = (props) => {
         </Text>
       </Box>
 
-      {data && data.map((x, i) => <JournalCard x={x} />)}
+      {data && data.map((x : [], _i : number) => <JournalCard key={_i} x={x} />)}
     </Box>
   )};
 export default journalViewer;

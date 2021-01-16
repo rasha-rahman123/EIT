@@ -1,7 +1,6 @@
 import axios from "axios";
 import Router from "next/router";
-import { useEffect, useState } from "react";
-import { MdToys } from "react-icons/md";
+import { useState } from "react";
 import { Transition } from "react-transition-group";
 import Typist from "react-typist";
 import { Box, Button, Text } from "rebass";
@@ -102,10 +101,10 @@ const maps = [
 ];
 
 export const cogTrainer = ({}) => {
-  const [state1, setState1] = useState(false);
-  const [state2, setState2] = useState(false);
-  const [inputVa, setInputVa] = useState("");
-  const [data, setData] = useState();
+  const state1 = true;
+  const [state2, setState2] = useState<boolean>(false);
+  const [inputVa, setInputVa] = useState<string>("");
+  const [data, setData] = useState<any[]>();
   const [session, loading] = useSession();
 
   if (loading) {
@@ -118,9 +117,7 @@ export const cogTrainer = ({}) => {
           top: 0,
           left: 0,
           right: 0,
-
           display: "flex",
-          width: "100%",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
@@ -192,30 +189,30 @@ export const cogTrainer = ({}) => {
       >
         Toxic Message A.I.
       </Text>
-      {state1 ? (
-        <Box
-          sx={{
-            width: "90%",
-            margin: "0 auto",
-            bg: "#2C2C2E",
-            p: 2,
-            pl: 4,
-            pr: 3,
-            borderRadius: 30,
-            textAlign: "center",
-          }}
-        >
-          {" "}
+
+      <Box
+        sx={{
+          width: "90%",
+          margin: "0 auto",
+          bg: "#2C2C2E",
+          p: 2,
+          pl: 4,
+          pr: 3,
+          borderRadius: 30,
+          textAlign: "center",
+        }}
+      >
+        {" "}
+        {state1 && (
           <Typist onTypingDone={() => setState2(true)} cursor={{ show: false }}>
             {" "}
             <Text color="white" sx={{ lineHeight: "120%", fontSize: 1 }}>
               See if a message is detected as toxic by our A. I.
             </Text>
           </Typist>
-        </Box>
-      ) : (
-        <Typist onTypingDone={() => setState1(true)}>........</Typist>
-      )}
+        )}
+      </Box>
+
       <Box
         sx={{
           display: "flex",
@@ -226,7 +223,7 @@ export const cogTrainer = ({}) => {
       >
         {
           <Transition in={state2} timeout={1000}>
-            {(status) => (
+            {(_status: string) => (
               <Box
                 as="form"
                 onSubmit={(e) => {
@@ -241,11 +238,12 @@ export const cogTrainer = ({}) => {
                       e.preventDefault();
                       fetchData();
                     }}
+                    
                     value={inputVa}
                     onChange={(e) => setInputVa(e.target.value)}
                     placeholder="Paste a message here"
                     sx={{
-                      background: "rgba(255, 255, 255,0.8)",
+                      background: "#000000",
                       borderRadius: 10,
                       width: "60%",
                       height: 48,
@@ -253,10 +251,9 @@ export const cogTrainer = ({}) => {
                       display: "flex",
                       py: 2,
                       px: 2,
-                      borderRadius: 10,
                       border: "none",
 
-                      color: "brayyy",
+                      color: "white",
 
                       fontSize: 2,
                       ":focus": { outline: "none" },
@@ -297,7 +294,7 @@ export const cogTrainer = ({}) => {
           }}
         >
           {" "}
-          {data.length > 0
+          {data && data.length > 0
             ? data && (
                 <Text color="white" sx={{ lineHeight: "120%", fontSize: 2 }}>
                   {" "}

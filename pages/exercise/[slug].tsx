@@ -16,7 +16,7 @@ const args = [
       "Yes, there are valid reasons for feeling insecure, but the more you repeat the good qualities to yourself, the less the  negative ones mattter.",
   },
   {
-    slug: "overeat-tracking",
+    slug: "food-tracking",
     time: 2,
     taskInfo:
       "Add everything you recently ate that you feel like you have overate. We will save your list so you can review the current and previous ones over and over again.",

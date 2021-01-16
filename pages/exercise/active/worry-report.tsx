@@ -42,6 +42,7 @@ const labels = [
   }
 export const worryReport : React.FC = ({}) => {
   const [stage, setStage] = useState<number>(0);
+  
   const [answers, setAnswers] = useState<string[]>([]);
   const j = typeof window !== 'undefined' && window.innerWidth;
   const [inputVal, setInputVal] = useState<string>("");
