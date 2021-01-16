@@ -53,7 +53,7 @@ useEffect(() => {
 },[partTwo])
 
   async function finishTrack() {
-    
+    //@ts-ignore
     await axios('/api/addScore', {params: {id: session.user.id}})
     
     

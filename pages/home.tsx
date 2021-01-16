@@ -121,6 +121,7 @@ const Home: React.FC<{ go: [] }> = ({ go }) => {
   const [textarea, setTextarea] = useState<string>("");
 
   const { data: da } = useSWR(
+    //@ts-ignore
     ["/api/cdj", session && session.user.id],
     fetcherId
   );
@@ -378,6 +379,7 @@ const Home: React.FC<{ go: [] }> = ({ go }) => {
                   mood &&
                   textarea.length > 0 &&
                   session &&
+                  //@ts-ignore
                   saveJournal(+session.user.id, textarea, mood)
                 }
                 my={3}

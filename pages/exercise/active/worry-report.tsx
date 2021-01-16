@@ -138,6 +138,7 @@ export const worryReport : React.FC = ({}) => {
      
       <Box
         as="button"
+        //@ts-ignore
         onClick={() =>stage < 7 ? handleNext() : finishTrack(session.user.id)}
         sx={{
           bg: "white",

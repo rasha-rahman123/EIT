@@ -10,7 +10,7 @@ const Profile : React.FC = () => {
   const [session, loading] = useSession();
 
 
-
+//@ts-ignore
 const { data} =  useSWR(['/api/getScore', session && session.user.id], fetcher)
 
 
