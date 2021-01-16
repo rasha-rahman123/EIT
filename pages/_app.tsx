@@ -4,6 +4,7 @@ import "../styles/globals.css";
 import React, { ReactElement } from 'react'
 import firebase from "firebase";
 import firebaseConfig from "../config/firebase";
+import Head from 'next/head'
 //@ts-ignore
 import { loadProgressBar } from "axios-progress-bar";
 import "../prog.css";
@@ -77,6 +78,15 @@ export default function MyApp({ Component, pageProps }: AppProps): ReactElement 
             cardType: "summary_large_image",
           }}
         />
+        <Head>
+        <meta charSet="utf-8" />
+          <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+          <meta
+            name="viewport"
+            content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
+          />
+           <link href="/logo/favicon/favicon.ico" rel="shortcut icon" />
+        </Head>
         {/* <Head>
           <meta charSet="utf-8" />
           <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
