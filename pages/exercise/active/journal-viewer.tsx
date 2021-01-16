@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useSession } from "next-auth/client";
-import Router from "next/router";
+import { useRouter } from "next/router";
 import { Box, Text } from "rebass";
 import useSWR from "swr";
 import JournalCard from "../../../components/JournalCard";
@@ -10,6 +10,7 @@ const fetcher = (url : string, id : number) =>
 
 export const journalViewer : React.FC = () => {
   const [session, loading] = useSession();
+  const router = useRouter()
   const { data } = useSWR(
     //@ts-ignore
     ["/api/getJournals",  session && session.user.id],
@@ -74,7 +75,7 @@ export const journalViewer : React.FC = () => {
           mb: 4,
         }}
       >
-        <Box sx={{ cursor: "pointer" }} onClick={() => Router.back()}>
+        <Box sx={{ cursor: "pointer" }} onClick={() => router.back()}>
           {"<"}
         </Box>
         <Text fontWeight="800" fontSize={3}>
